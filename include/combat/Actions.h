@@ -175,6 +175,7 @@ namespace sts {
         static Action RitualDaggerAction(int idx, int damage);
         static Action SecondWindAction(int blockPerCard);
         static Action SeverSoulExhaustAction();
+        static Action ScryAction(int amount);
         static Action SpotWeaknessAction(int target, int strength); // Spot Weakness
         static Action WhirlwindAction(int baseDamage, int energy, bool useEnergy);
 

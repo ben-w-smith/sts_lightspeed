@@ -389,6 +389,11 @@ void BattleSimulator::printCardSelectActions(std::ostream &os) const {
         case CardSelectTask::RECYCLE:
             break;
 
+        case CardSelectTask::SCRY:
+            os << "Scry Action: Choose cards to discard from the top of your draw pile.\n";
+            printCardOptionsHelper(os, bc->cards.drawPile.begin(), bc->cards.drawPile.begin() + bc->cardSelectInfo.pickCount);
+            break;
+
 
         default:
 #ifdef sts_asserts
@@ -508,6 +513,10 @@ void BattleSimulator::takeCardSelectAction(const std::string &action) {
 
         case CardSelectTask::WARCRY:
             bc->chooseWarcryCard(std::stoi(action));
+            break;
+
+        case CardSelectTask::SCRY:
+            bc->chooseScryCards(getIdxListFromString(action));
             break;
     }
 }

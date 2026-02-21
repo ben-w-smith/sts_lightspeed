@@ -2671,6 +2671,18 @@ void BattleContext::useSkillCard() {
             break;
         }
 
+        case CardId::WREATH_OF_FLAME: {
+            addToBot( Action([&, up](BattleContext &b) {
+                if (b.player.stance == Stance::WRATH) {
+                    const int dmg = up ? 8 : 5;
+                    b.addToTop(Actions::AttackAllEnemy(dmg));
+                }
+                b.addToTop(Actions::GainEnergy(1));
+                b.addToTop(Actions::ChangeStance(Stance::WRATH));
+            }));
+            break;
+        }
+
         case CardId::THIRD_EYE: {
             addToBot( Actions::ScryAction(up ? 5 : 3) );
             addToBot( Actions::GainBlock(up ? 6 : 4) );

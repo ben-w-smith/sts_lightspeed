@@ -216,6 +216,7 @@ namespace sts {
         void chooseExhaustCards(const fixed_list<int,10> &idxs);
         void chooseGambleCards(const fixed_list<int,10> &idxs);
         void chooseDiscardCards(const fixed_list<int,10> &idxs);
+        void chooseScryCards(const fixed_list<int,10> &idxs);
 
     };
 
