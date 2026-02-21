@@ -28,7 +28,7 @@ sys.path.insert(0, str(_integration_dir))
 from harness.game_controller import GameController, CommunicationModError
 from harness.simulator_controller import SimulatorController
 from harness.state_comparator import StateComparator, ComparisonResult
-from harness.action_translator import ActionTranslator, TranslatedAction
+from harness.action_translator import ActionTranslator, TranslatedAction, ActionType
 from harness.reporter import Reporter, TestResult, StepResult, ActionRecord
 
 # Import from tests harness (has scenario_loader, seed_synchronizer, etc.)
@@ -259,6 +259,21 @@ class TestRunner:
         if not self.sim:
             return None
 
+        screen_state = self.sim.get_screen_state()
+
+        # Handle events - use "choose" command
+        if screen_state == 'event':
+            available = self.sim.get_available_actions()
+            if available:
+                # For events, use "choose <idx>" for game
+                idx = available[0]
+                return TranslatedAction(
+                    action_type=ActionType.CHOOSE_OPTION,
+                    game_command=f"choose {idx}",
+                    sim_command=str(idx),
+                    params={'option_index': idx}
+                )
+
         # Check if in combat - need to handle targeted cards
         if self.sim.is_in_combat():
             state = self.sim.get_state()
@@ -287,16 +302,20 @@ class TestRunner:
             # Can't play any cards, end turn
             return self.translator.from_sim_to_game("end")
 
-        # Not in combat - use screen text parsing for events, map, rewards, etc.
+        # Handle rewards, map, etc.
         available = self.sim.get_available_actions()
         if available:
-            # Take first available action (works for events, map, rewards, etc.)
-            return self.translator.from_sim_to_game(available[0])
+            # For non-event screens, use "choose" for game
+            idx = available[0]
+            return TranslatedAction(
+                action_type=ActionType.CHOOSE_OPTION,
+                game_command=f"choose {idx}",
+                sim_command=str(idx),
+                params={'option_index': idx}
+            )
 
         # No actions available - try to proceed
-        screen_state = self.sim.get_screen_state()
-        if screen_state in ['reward', 'event', 'map']:
-            # Try to proceed/skip
+        if screen_state in ['reward', 'map']:
             return self.translator.from_sim_to_game("proceed")
 
         return None

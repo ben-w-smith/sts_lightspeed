@@ -116,7 +116,7 @@ class GameController:
         """Read current game state from bridge.
 
         Returns:
-            Dictionary containing game state.
+            Dictionary containing game state with nested game_state flattened.
         """
         if not self._connected:
             raise CommunicationModError("Not connected to CommunicationMod bridge")
@@ -125,6 +125,14 @@ class GameController:
             with open(self.state_file, 'r') as f:
                 state = json.load(f)
             self._last_state = state
+
+            # Flatten the nested game_state for comparison with simulator
+            # CommunicationMod returns: {"available_commands": [...], "game_state": {...}}
+            # We want to merge game_state to top level for comparison
+            if 'game_state' in state:
+                flattened = state.copy()
+                flattened.update(state['game_state'])
+                return flattened
             return state
         except FileNotFoundError:
             raise CommunicationModError(
