@@ -16,6 +16,12 @@ __pycache__/
 # OS artifacts
 .DS_Store
 
+# Worktree directories
+.worktrees/
+
+# Claude Code config
+.claude/
+
 # Test results
 /test_results/
 
