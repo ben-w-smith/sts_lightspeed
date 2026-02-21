@@ -1142,10 +1142,7 @@ PYBIND11_MODULE(slaythespire, m) {
         .def(pybind11::init<>())
         .def("setup_game", &sts::ConsoleSimulator::setupGame)
         .def("take_action", [](sts::ConsoleSimulator &self, const std::string &action) {
-            sts::SimulatorContext c;
-            c.printPrompts = false; 
-            std::ostringstream oss;
-            self.handleInputLine(action, oss, c);
+            self.takeAction(action);
         })
         .def_property_readonly("gc", [](sts::ConsoleSimulator &self) -> sts::GameContext* {
             return self.gc;

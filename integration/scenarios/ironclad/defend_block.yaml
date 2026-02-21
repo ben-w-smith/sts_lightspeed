@@ -1,0 +1,29 @@
+name: "Ironclad Defend Block"
+description: "Test Defend card block gain and decay"
+character: IRONCLAD
+ascension: 0
+
+steps:
+  - action: "choose 0"
+    description: "Start new run"
+
+  - action: "choose 0"
+    description: "Select first map node"
+
+  - action: "play Defend"
+    description: "Play Defend for block"
+
+  - action: "play Defend"
+    description: "Play second Defend"
+
+  - action: "end"
+    description: "End turn"
+
+expected_states:
+  after_defends:
+    player_block:
+      min: 10  # 5+5 from two Defends
+      max: 10
+
+  after_turn_end:
+    player_block: 0  # Block decays at start of next turn

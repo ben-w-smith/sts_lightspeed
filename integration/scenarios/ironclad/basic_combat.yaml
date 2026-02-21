@@ -1,0 +1,56 @@
+# Basic Ironclad combat test scenario
+# This scenario tests basic combat mechanics with the starting deck
+
+name: "Basic Ironclad Combat"
+description: "Test basic combat with Ironclad starting deck against Cultist"
+character: IRONCLAD
+ascension: 0
+
+# Optional: specify a seed for reproducibility
+# seed: 12345
+
+# Steps to execute
+# Each step is an action to take
+steps:
+  # First combat - Floor 1
+  - type: choose
+    option: 0  # Choose first Neow reward
+
+  - type: map
+    node: 0    # Choose first available node
+
+  # Combat starts - play cards
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+# Expected states at various points
+expected:
+  after_step_1:
+    screen: "map"  # or event screen
+
+  combat_start:
+    player_hp:
+      min: 80
+      max: 80
+    player_energy: 3
+    hand_size: 5
+
+  after_combat:
+    screen: "reward"

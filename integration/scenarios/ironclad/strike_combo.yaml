@@ -1,0 +1,42 @@
+name: "Ironclad Strike Combo"
+description: "Test Strike card damage with Bash vulnerable"
+character: IRONCLAD
+ascension: 0
+seed: 12345
+
+steps:
+  - action: "choose 0"
+    description: "Start new run"
+
+  - action: "choose 0"
+    description: "Select first map node"
+
+  # Apply vulnerable with Bash
+  - action: "play Bash 0"
+    description: "Play Bash on first monster"
+
+  # Strike for bonus damage (vulnerable = 50% more)
+  - action: "play Strike 0"
+    description: "Play Strike on vulnerable monster"
+
+  - action: "end"
+    description: "End turn"
+
+  - action: "play Strike 0"
+    description: "Play Strike"
+
+  - action: "play Strike 0"
+    description: "Play Strike"
+
+expected_states:
+  after_bash:
+    monsters:
+      - index: 0
+        has_vulnerable: true
+
+  combat_start:
+    player_hp:
+      min: 80
+      max: 80
+    player_energy: 3
+    hand_size: 5

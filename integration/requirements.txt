@@ -1,0 +1,6 @@
+# Requirements for integration tests
+
+# Configuration parsing
+pyyaml>=6.0
+
+# No additional requirements needed - pybind11 bindings are built with the project

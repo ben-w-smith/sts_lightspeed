@@ -1,0 +1,102 @@
+# Integration test configuration
+
+communication_mod:
+  # Directory for bridge communication files
+  state_dir: "/tmp/sts_bridge"
+  # Timeout for waiting on bridge connection (seconds)
+  timeout: 30.0
+
+  # To set up CommunicationMod with the bridge:
+  # 1. Install ModTheSpire and CommunicationMod
+  # 2. Edit ~/Library/Preferences/ModTheSpire/CommunicationMod/config.properties:
+  #    command=python /path/to/tests/integration/harness/communication_bridge.py --state-dir /tmp/sts_bridge
+  # 3. Launch Slay the Spire through ModTheSpire
+
+comparison:
+  # Tolerances for numeric field comparisons
+  tolerances:
+    damage: 0    # Exact match required
+    hp: 0        # Exact match required
+    block: 0     # Exact match required
+    energy: 0    # Exact match required
+    gold: 0      # Exact match required
+
+  # Fields to skip comparison (known differences)
+  skip_fields: []
+
+reporting:
+  # Output directory for reports
+  output_dir: "./test_results"
+  # Enable verbose output
+  verbose: true
+  # Generate all report formats
+  formats:
+    - json
+    - markdown
+    - console
+
+test_execution:
+  # Characters to test (start with Ironclad)
+  characters:
+    - IRONCLAD
+    # - SILENT    # Uncomment when Silent is stable
+    # - DEFECT    # Uncomment when Defect is stable
+    # - WATCHER   # Uncomment when Watcher is stable
+
+  # Default ascension level
+  ascension: 0
+
+  # Maximum steps per test before stopping
+  max_steps_per_test: 1000
+
+  # Stabilization delay between actions (seconds)
+  action_delay: 0.1
+
+  # Stop on first critical failure
+  stop_on_critical: true
+
+# Test scenarios to run
+scenarios:
+  # Quick smoke test - basic card plays
+  quick:
+    enabled: true
+    max_steps: 50
+
+  # Full combat tests
+  combat:
+    enabled: true
+    max_steps: 200
+
+  # Card effect validation
+  cards:
+    enabled: true
+
+  # Monster AI validation
+  monsters:
+    enabled: true
+
+# Known discrepancies (to skip during comparison)
+known_discrepancies:
+  # Example: Watcher stance transitions not fully implemented
+  # - field: "player.stance"
+  #   condition:
+  #     character: WATCHER
+  #   reason: "Watcher stances not yet implemented"
+
+# Game launcher configuration
+launcher:
+  # Platform: auto, mac, windows, linux
+  platform: auto
+
+  # Steam and game paths (Mac defaults)
+  steam_path: "~/Library/Application Support/Steam"
+  sts_path: "~/Library/Application Support/Steam/steamapps/common/SlayTheSpire"
+
+  # Mods required for testing
+  mods:
+    - "CommunicationMod"
+
+  # Launch behavior
+  auto_launch: false      # Set true to auto-launch game
+  timeout: 120.0          # Seconds to wait for game startup
+  terminate_on_exit: true # Close game when tests complete
