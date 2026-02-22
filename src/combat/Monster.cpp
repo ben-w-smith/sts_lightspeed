@@ -474,7 +474,9 @@ void Monster::damage(BattleContext &bc, int damage) {
         damage = 0;
     }
 
-    if (hasStatus<MS::INTANGIBLE>()) { // this is probably wrong with potions
+    if (hasStatus<MS::INTANGIBLE>()) {
+        // ISSUE-003: Intangible status may not handle potion damage correctly
+        // See docs/KNOWN_ISSUES.md for details
         if (damage > 0) {
             damage = 1;
         }

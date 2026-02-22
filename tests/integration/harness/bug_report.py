@@ -15,6 +15,46 @@ from typing import Dict, Any, List, Optional
 
 
 @dataclass
+class CodeReference:
+    """A reference to a code location relevant to a bug."""
+    file: str
+    line: Optional[int] = None
+    function: Optional[str] = None
+    description: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            'file': self.file,
+            'line': self.line,
+            'function': self.function,
+            'description': self.description,
+        }
+
+
+@dataclass
+class FixSuggestion:
+    """A suggestion for fixing the bug."""
+    issue_type: str
+    description: str
+    files: List[str] = field(default_factory=list)
+    search_terms: List[str] = field(default_factory=list)
+    likely_functions: List[str] = field(default_factory=list)
+    code_references: List[CodeReference] = field(default_factory=list)
+    priority: str = "normal"
+
+    def to_dict(self) -> dict:
+        return {
+            'issue_type': self.issue_type,
+            'description': self.description,
+            'files': self.files,
+            'search_terms': self.search_terms,
+            'likely_functions': self.likely_functions,
+            'code_references': [r.to_dict() for r in self.code_references],
+            'priority': self.priority,
+        }
+
+
+@dataclass
 class BugReport:
     """Structured bug report for simulator-game discrepancies.
 
@@ -54,6 +94,10 @@ class BugReport:
     notes: str = ""
     tags: List[str] = field(default_factory=list)
 
+    # Fix suggestions (new fields)
+    fix_suggestions: List[FixSuggestion] = field(default_factory=list)
+    related_code_paths: List[CodeReference] = field(default_factory=list)
+
     def __post_init__(self):
         """Set platform if not provided."""
         if not self.platform:
@@ -66,7 +110,11 @@ class BugReport:
         Returns:
             Dictionary representation.
         """
-        return asdict(self)
+        data = asdict(self)
+        # Handle FixSuggestion and CodeReference serialization
+        data['fix_suggestions'] = [s.to_dict() if hasattr(s, 'to_dict') else s for s in self.fix_suggestions]
+        data['related_code_paths'] = [r.to_dict() if hasattr(r, 'to_dict') else r for r in self.related_code_paths]
+        return data
 
     def to_markdown(self) -> str:
         """Convert to Markdown format for human reading.
@@ -145,6 +193,56 @@ class BugReport:
         lines.append("```")
         lines.append("")
 
+        # Fix Suggestions (new section)
+        if self.fix_suggestions:
+            lines.append("## Fix Suggestions")
+            lines.append("")
+            for i, suggestion in enumerate(self.fix_suggestions, 1):
+                lines.append(f"### Suggestion {i}: {suggestion.issue_type}")
+                lines.append("")
+                lines.append(f"**Priority**: {suggestion.priority}")
+                lines.append("")
+                lines.append(f"**Description**: {suggestion.description}")
+                lines.append("")
+
+                if suggestion.files:
+                    lines.append("**Files to investigate**:")
+                    lines.append("")
+                    for f in suggestion.files:
+                        lines.append(f"- `{f}`")
+                    lines.append("")
+
+                if suggestion.search_terms:
+                    lines.append("**Search terms**: " + ", ".join(f"`{t}`" for t in suggestion.search_terms))
+                    lines.append("")
+
+                if suggestion.likely_functions:
+                    lines.append("**Likely functions**: " + ", ".join(f"`{f}()`" for f in suggestion.likely_functions))
+                    lines.append("")
+
+                if suggestion.code_references:
+                    lines.append("**Code references**:")
+                    lines.append("")
+                    for ref in suggestion.code_references:
+                        location = f"{ref.file}"
+                        if ref.line:
+                            location += f":{ref.line}"
+                        lines.append(f"- `{location}` - {ref.description}")
+                    lines.append("")
+
+        # Related Code Paths (new section)
+        if self.related_code_paths:
+            lines.append("## Related Code Paths")
+            lines.append("")
+            for ref in self.related_code_paths:
+                location = f"{ref.file}"
+                if ref.line:
+                    location += f":{ref.line}"
+                if ref.function:
+                    location += f" in `{ref.function}()`"
+                lines.append(f"- `{location}` - {ref.description}")
+            lines.append("")
+
         # Notes
         if self.notes:
             lines.append("## Notes")
@@ -212,7 +310,8 @@ class BugReportGenerator:
         discrepancies: List[Dict[str, Any]],
         severity: str = "major",
         category: str = "unknown",
-        notes: str = ""
+        notes: str = "",
+        generate_fix_suggestions: bool = True
     ) -> BugReport:
         """Create a new bug report.
 
@@ -229,6 +328,7 @@ class BugReportGenerator:
             severity: Bug severity (critical, major, minor).
             category: Bug category (combat, card, monster, relic, event).
             notes: Additional notes.
+            generate_fix_suggestions: Whether to auto-generate fix suggestions.
 
         Returns:
             Created BugReport.
@@ -251,8 +351,63 @@ class BugReportGenerator:
             simulator_commit=self._get_simulator_commit()
         )
 
+        # Generate fix suggestions if requested
+        if generate_fix_suggestions and discrepancies:
+            self._populate_fix_suggestions(report)
+
         self._reports.append(report)
         return report
+
+    def _populate_fix_suggestions(self, report: BugReport):
+        """Populate fix suggestions for a bug report.
+
+        Args:
+            report: The bug report to populate.
+        """
+        try:
+            # Import fix analyzer
+            import sys
+            from pathlib import Path
+            integration_path = Path(__file__).parent.parent.parent / 'integration' / 'harness'
+            if str(integration_path) not in sys.path:
+                sys.path.insert(0, str(integration_path))
+
+            from fix_analyzer import FixAnalyzer
+
+            analyzer = FixAnalyzer()
+            suggestions = analyzer.analyze_discrepancies(report.discrepancies)
+
+            report.fix_suggestions = [
+                FixSuggestion(
+                    issue_type=s.issue_type,
+                    description=s.description,
+                    files=s.files,
+                    search_terms=s.search_terms,
+                    likely_functions=s.likely_functions,
+                    priority=s.priority,
+                )
+                for s in suggestions
+            ]
+
+            # Generate code references for the first suggestion
+            if suggestions and suggestions[0].search_terms:
+                refs = analyzer.find_code_references(
+                    suggestions[0].search_terms[0],
+                    suggestions[0].files
+                )
+                report.related_code_paths = [
+                    CodeReference(
+                        file=r.file,
+                        line=r.line,
+                        function=r.function,
+                        description=r.description,
+                    )
+                    for r in refs[:10]
+                ]
+
+        except Exception:
+            # If fix analyzer isn't available, just skip
+            pass
 
     def save_report(self, report: BugReport) -> Path:
         """Save a bug report.

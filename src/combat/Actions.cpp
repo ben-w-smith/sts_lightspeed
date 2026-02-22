@@ -849,7 +849,9 @@ Action Actions::DualWieldAction(int copyCount) {
     }};
 }
 
-Action Actions::ExhumeAction() { // todo this is bugged because the selected card cannot be exhume
+Action Actions::ExhumeAction() {
+    // ISSUE-002: Exhume card selection edge case
+    // See docs/KNOWN_ISSUES.md for details
     return {[=] (BattleContext &bc) {
         if (bc.cards.exhaustPile.empty() || bc.cards.cardsInHand == 10) {
             return;

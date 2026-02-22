@@ -8,7 +8,6 @@
 #include <vector>
 #include <array>
 #include <functional>
-#include <memory>
 
 #include "data_structure/fixed_list.h"
 
@@ -212,7 +211,7 @@ namespace sts {
 
         int curMapNodeX = -1;
         int curMapNodeY = -1;
-        std::shared_ptr<Map> map = nullptr; // todo fix memory leak
+        Map map;
 
         int act = 1;
         int ascension = 0;

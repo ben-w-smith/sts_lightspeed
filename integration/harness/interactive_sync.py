@@ -45,13 +45,15 @@ from harness.game_controller import GameController, CommunicationModError
 from harness.simulator_controller import SimulatorController
 from harness.state_comparator import StateComparator, Discrepancy, DiscrepancySeverity
 from harness.action_translator import ActionTranslator, TranslatedAction, ActionType
+from harness.sync_orchestrator import SyncOrchestrator, ScenarioResult
 
 
 class SyncMode(Enum):
     """Sync operation modes."""
-    FULL = "full"           # Full sync: replay all actions to simulator
+    FULL = "full"           # Full sync: replay all actions to simulator (uses SyncOrchestrator)
     WATCH = "watch"         # Watch mode: only observe, don't replay
     VERIFY = "verify"       # Verify mode: compare states but don't replay
+    ORCHESTRATED = "orchestrated"  # Orchestrated mode: use SyncOrchestrator for deterministic replay
 
 
 @dataclass
@@ -92,15 +94,17 @@ class InteractiveSync:
         state_dir: str = "/tmp/sts_bridge",
         mode: SyncMode = SyncMode.FULL,
         verbose: bool = False,
-        alert_callback: Optional[Callable[[SyncEvent], None]] = None
+        alert_callback: Optional[Callable[[SyncEvent], None]] = None,
+        use_orchestrator: bool = False
     ):
         """Initialize the interactive sync.
 
         Args:
             state_dir: Directory for bridge communication.
-            mode: Sync mode (FULL, WATCH, or VERIFY).
+            mode: Sync mode (FULL, WATCH, VERIFY, or ORCHESTRATED).
             verbose: Enable verbose output.
             alert_callback: Optional callback for discrepancy alerts.
+            use_orchestrator: Use SyncOrchestrator for deterministic execution.
         """
         self.state_dir = state_dir
         self.mode = mode
@@ -112,12 +116,19 @@ class InteractiveSync:
         self.comparator = StateComparator()
         self.translator = ActionTranslator()
 
+        # SyncOrchestrator for deterministic execution
+        self.orchestrator: Optional[SyncOrchestrator] = None
+        self.use_orchestrator = use_orchestrator or mode == SyncMode.ORCHESTRATED
+
         self._last_game_state: Optional[Dict[str, Any]] = None
         self._last_sim_state: Optional[Dict[str, Any]] = None
         self._last_action: Optional[str] = None
         self._synced = False
         self._running = False
         self._events: List[SyncEvent] = []
+
+        # Pending actions for orchestrated mode (actions to replay)
+        self._pending_actions: List[TranslatedAction] = []
 
         # Stats
         self.stats = {
@@ -189,14 +200,50 @@ class InteractiveSync:
                 return False
 
         try:
-            self.sim = SimulatorController()
-            self.sim.setup_game(seed, character, ascension)
-            print(f"Simulator initialized: seed={seed}, character={character}, ascension={ascension}")
+            if self.use_orchestrator:
+                # Use SyncOrchestrator for deterministic execution
+                self.orchestrator = SyncOrchestrator(
+                    state_dir=self.state_dir,
+                    verbose=self.verbose,
+                )
+                self.orchestrator.game = self.game  # Reuse existing connection
+                self.orchestrator.initialize_simulator(seed, character, ascension)
+                self.sim = self.orchestrator.sim
+                print(f"Orchestrator initialized: seed={seed}, character={character}, ascension={ascension}")
+            else:
+                self.sim = SimulatorController()
+                self.sim.setup_game(seed, character, ascension)
+                print(f"Simulator initialized: seed={seed}, character={character}, ascension={ascension}")
             self._synced = True
             return True
         except Exception as e:
             print(f"Failed to initialize simulator: {e}")
             return False
+
+    def set_pending_actions(self, actions: List[TranslatedAction]):
+        """Set actions to replay in orchestrated mode.
+
+        Args:
+            actions: List of TranslatedActions to replay.
+        """
+        self._pending_actions = list(actions)
+        self._log(f"Set {len(actions)} pending actions for orchestrated replay")
+
+    def set_pending_action_strings(self, commands: List[str], command_type: str = "sim"):
+        """Set action strings to replay in orchestrated mode.
+
+        Args:
+            commands: List of command strings.
+            command_type: "sim" or "game" format.
+        """
+        actions = []
+        for cmd in commands:
+            if command_type == "game":
+                action = self.translator.from_game_to_sim(cmd)
+            else:
+                action = self.translator.from_sim_to_game(cmd)
+            actions.append(action)
+        self.set_pending_actions(actions)
 
     def _log(self, message: str, level: str = "INFO"):
         """Log a message."""
@@ -227,52 +274,21 @@ class InteractiveSync:
     ) -> Optional[str]:
         """Detect what action occurred based on state change.
 
-        This is a heuristic approach to detect actions from state diffs.
-        For more accurate detection, we would need access to CommunicationMod's
-        command log or action history.
+        DEPRECATED: This heuristic approach is unreliable for precise replay.
+        Use SyncOrchestrator for deterministic execution instead.
+
+        This method is kept for watch mode only and returns None to indicate
+        that action detection is not available.
 
         Args:
             old_state: Previous game state.
             new_state: Current game state.
 
         Returns:
-            Detected action string or None.
+            None - action detection is deprecated.
         """
-        if old_state is None or new_state is None:
-            return None
-
-        old_combat = old_state.get('combat_state', {})
-        new_combat = new_state.get('combat_state', {})
-
-        # Check for turn change (end turn was pressed)
-        old_turn = old_combat.get('turn', 0)
-        new_turn = new_combat.get('turn', 0)
-        if new_turn > old_turn:
-            return "end"
-
-        # Check for hand size decrease (card was played)
-        old_hand = old_combat.get('hand', [])
-        new_hand = new_combat.get('hand', [])
-        if len(old_hand) > len(new_hand):
-            # Try to identify which card was played
-            # This is a simplified heuristic
-            return "play"  # We don't know exact index
-
-        # Check for screen state change
-        old_screen = old_state.get('screen_state', old_state.get('room_phase', ''))
-        new_screen = new_state.get('screen_state', new_state.get('room_phase', ''))
-        if old_screen != new_screen:
-            return "choose"  # Some choice was made
-
-        # Check for HP changes in monsters (damage was dealt)
-        old_monsters = old_combat.get('monsters', [])
-        new_monsters = new_combat.get('monsters', [])
-        if len(old_monsters) == len(new_monsters):
-            for om, nm in zip(old_monsters, new_monsters):
-                if om.get('cur_hp', 0) != nm.get('cur_hp', 0):
-                    # Monster HP changed - likely a card was played
-                    return "play"
-
+        # Heuristic detection removed - use SyncOrchestrator for deterministic replay
+        # For watch mode, we don't need to detect actions
         return None
 
     def _compare_and_report(self, game_state: Dict[str, Any],
@@ -309,7 +325,8 @@ class InteractiveSync:
         """Perform a single sync step.
 
         Reads current game state, compares with simulator, and optionally
-        replays actions.
+        replays actions. In orchestrated mode, uses SyncOrchestrator for
+        deterministic execution.
 
         Returns:
             SyncEvent if something happened, None otherwise.
@@ -330,26 +347,45 @@ class InteractiveSync:
             # State changed - process it
             self._log(f"State changed", level="DEBUG")
 
-            # Detect action if possible
-            detected_action = self._detect_action_from_state_change(
-                self._last_game_state, game_state
-            )
+            detected_action = None
 
-            # If we have a simulator and detected an action, replay it
-            if self.sim and detected_action and self.mode == SyncMode.FULL:
-                try:
-                    # Translate and apply action
-                    translated = self.translator.from_game_to_sim(detected_action)
-                    if translated.sim_command:
-                        self.sim.take_action(translated.sim_command)
-                        self.stats['total_actions'] += 1
-                        self._log(f"Applied to simulator: {translated.sim_command}")
-                except Exception as e:
-                    self._log(f"Error applying action to simulator: {e}", level="ERROR")
+            # In orchestrated mode, use SyncOrchestrator for deterministic replay
+            if self.use_orchestrator and self.orchestrator and self._pending_actions:
+                action = self._pending_actions.pop(0)
+                step_result = self.orchestrator.execute_action(action, compare=True)
+                self.stats['total_actions'] += 1
+
+                # Create event from step result
+                detected_action = action.game_command
+
+                # Convert step result discrepancies to our format
+                discrepancies = []
+                if step_result.comparison:
+                    for d in step_result.comparison.discrepancies:
+                        discrepancies.append(d)
+
+                self._last_game_state = game_state
+                if self.orchestrator.sim:
+                    self._last_sim_state = self.orchestrator.sim.get_state()
+
+                return self._create_event(
+                    event_type="orchestrated_action",
+                    data={
+                        'action': action.game_command,
+                        'step_number': step_result.step_number,
+                        'passed': step_result.passed,
+                        'game_screen': game_state.get('screen_state', 'unknown'),
+                        'game_floor': game_state.get('floor', 0),
+                    },
+                    discrepancies=discrepancies
+                )
+
+            # Non-orchestrated mode: just observe (heuristic detection removed)
+            # In WATCH mode, we don't replay actions - just observe state changes
 
             # Compare states if we have both
             discrepancies = []
-            if self.sim:
+            if self.sim and self.mode != SyncMode.WATCH:
                 sim_state = self.sim.get_state()
                 discrepancies = self._compare_and_report(game_state, sim_state)
                 self._last_sim_state = sim_state
@@ -478,9 +514,9 @@ def main():
     parser.add_argument(
         '--mode',
         type=str,
-        default='full',
-        choices=['full', 'watch', 'verify'],
-        help='Sync mode: full (replay actions), watch (observe only), verify (compare only)'
+        default='watch',
+        choices=['full', 'watch', 'verify', 'orchestrated'],
+        help='Sync mode: watch (observe only), orchestrated (deterministic replay via SyncOrchestrator)'
     )
     parser.add_argument(
         '--state-dir',
@@ -505,6 +541,12 @@ def main():
         action='store_true',
         help='Enable verbose output'
     )
+    parser.add_argument(
+        '--replay',
+        type=str,
+        default=None,
+        help='Replay recorded session from JSON file (for orchestrated mode)'
+    )
 
     args = parser.parse_args()
 
@@ -513,13 +555,17 @@ def main():
         'full': SyncMode.FULL,
         'watch': SyncMode.WATCH,
         'verify': SyncMode.VERIFY,
+        'orchestrated': SyncMode.ORCHESTRATED,
     }
+
+    use_orchestrator = args.mode in ('orchestrated', 'full')
 
     sync = InteractiveSync(
         state_dir=args.state_dir,
         mode=mode_map[args.mode],
         verbose=args.verbose,
-        alert_callback=alert_handler
+        alert_callback=alert_handler,
+        use_orchestrator=use_orchestrator
     )
 
     # Connect to game
@@ -536,6 +582,18 @@ def main():
         ):
             print("Failed to initialize simulator. Continuing in watch mode.")
             sync.mode = SyncMode.WATCH
+
+    # Load replay actions if provided
+    if args.replay and args.mode == 'orchestrated':
+        try:
+            from harness.action_recorder import ActionRecorder
+            recorder = ActionRecorder()
+            session = recorder.load_session(args.replay)
+            sync.set_pending_actions(session.get_actions_for_replay())
+            print(f"Loaded {session.total_actions} actions from {args.replay}")
+        except Exception as e:
+            print(f"Failed to load replay file: {e}")
+            return 1
 
     # Run sync loop
     sync.run(interval=args.interval)

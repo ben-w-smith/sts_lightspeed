@@ -1,0 +1,465 @@
+{
+  "config": {
+    "seed": 12345,
+    "character": "IRONCLAD",
+    "ascension": 0,
+    "max_steps": 10000,
+    "max_acts": 4,
+    "action_delay": 0.1,
+    "stop_on_critical": true,
+    "verbose": false,
+    "no_game": true,
+    "output_dir": "./verification_results"
+  },
+  "start_time": "2026-02-21T18:26:09.055346",
+  "end_time": "2026-02-21T18:26:09.146054",
+  "completed": false,
+  "victory": false,
+  "death_floor": null,
+  "final_act": 1,
+  "final_floor": 1,
+  "total_steps": 53,
+  "critical_discrepancies": 0,
+  "major_discrepancies": 0,
+  "minor_discrepancies": 0,
+  "action_history": [
+    {
+      "step": 0,
+      "game_command": "choose 0",
+      "sim_command": "0",
+      "action_type": "choose_option",
+      "timestamp": "2026-02-21T18:26:09.056535",
+      "error": null
+    },
+    {
+      "step": 1,
+      "game_command": "choose skip",
+      "sim_command": "skip",
+      "action_type": "choose_option",
+      "timestamp": "2026-02-21T18:26:09.057474",
+      "error": null
+    },
+    {
+      "step": 2,
+      "game_command": "choose 3",
+      "sim_command": "3",
+      "action_type": "map_move",
+      "timestamp": "2026-02-21T18:26:09.058456",
+      "error": null
+    },
+    {
+      "step": 3,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.060307",
+      "error": null
+    },
+    {
+      "step": 4,
+      "game_command": "play 0",
+      "sim_command": "0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.062101",
+      "error": null
+    },
+    {
+      "step": 5,
+      "game_command": "play 0",
+      "sim_command": "0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.063884",
+      "error": null
+    },
+    {
+      "step": 6,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.065644",
+      "error": null
+    },
+    {
+      "step": 7,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.067447",
+      "error": null
+    },
+    {
+      "step": 8,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.069178",
+      "error": null
+    },
+    {
+      "step": 9,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.070952",
+      "error": null
+    },
+    {
+      "step": 10,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.072676",
+      "error": null
+    },
+    {
+      "step": 11,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.074384",
+      "error": null
+    },
+    {
+      "step": 12,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.076095",
+      "error": null
+    },
+    {
+      "step": 13,
+      "game_command": "play 0",
+      "sim_command": "0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.077816",
+      "error": null
+    },
+    {
+      "step": 14,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.079535",
+      "error": null
+    },
+    {
+      "step": 15,
+      "game_command": "play 0 0",
+      "sim_command": "0 0",
+      "action_type": "play_card",
+      "timestamp": "2026-02-21T18:26:09.081273",
+      "error": null
+    },
+    {
+      "step": 16,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.083129",
+      "error": null
+    },
+    {
+      "step": 17,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.084743",
+      "error": null
+    },
+    {
+      "step": 18,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.086338",
+      "error": null
+    },
+    {
+      "step": 19,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.087958",
+      "error": null
+    },
+    {
+      "step": 20,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.089580",
+      "error": null
+    },
+    {
+      "step": 21,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.091210",
+      "error": null
+    },
+    {
+      "step": 22,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.092990",
+      "error": null
+    },
+    {
+      "step": 23,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.094645",
+      "error": null
+    },
+    {
+      "step": 24,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.096376",
+      "error": null
+    },
+    {
+      "step": 25,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.098074",
+      "error": null
+    },
+    {
+      "step": 26,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.099787",
+      "error": null
+    },
+    {
+      "step": 27,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.101579",
+      "error": null
+    },
+    {
+      "step": 28,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.103360",
+      "error": null
+    },
+    {
+      "step": 29,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.105118",
+      "error": null
+    },
+    {
+      "step": 30,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.106872",
+      "error": null
+    },
+    {
+      "step": 31,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.108628",
+      "error": null
+    },
+    {
+      "step": 32,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.110408",
+      "error": null
+    },
+    {
+      "step": 33,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.112188",
+      "error": null
+    },
+    {
+      "step": 34,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.113917",
+      "error": null
+    },
+    {
+      "step": 35,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.115630",
+      "error": null
+    },
+    {
+      "step": 36,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.117353",
+      "error": null
+    },
+    {
+      "step": 37,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.119080",
+      "error": null
+    },
+    {
+      "step": 38,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.120780",
+      "error": null
+    },
+    {
+      "step": 39,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.122496",
+      "error": null
+    },
+    {
+      "step": 40,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.124212",
+      "error": null
+    },
+    {
+      "step": 41,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.125957",
+      "error": null
+    },
+    {
+      "step": 42,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.127691",
+      "error": null
+    },
+    {
+      "step": 43,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.129416",
+      "error": null
+    },
+    {
+      "step": 44,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.131152",
+      "error": null
+    },
+    {
+      "step": 45,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.132744",
+      "error": null
+    },
+    {
+      "step": 46,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.134402",
+      "error": null
+    },
+    {
+      "step": 47,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.136008",
+      "error": null
+    },
+    {
+      "step": 48,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.137619",
+      "error": null
+    },
+    {
+      "step": 49,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.139224",
+      "error": null
+    },
+    {
+      "step": 50,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.140936",
+      "error": null
+    },
+    {
+      "step": 51,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.142651",
+      "error": null
+    },
+    {
+      "step": 52,
+      "game_command": "end",
+      "sim_command": "end",
+      "action_type": "end_turn",
+      "timestamp": "2026-02-21T18:26:09.144416",
+      "error": null
+    }
+  ],
+  "state_snapshots": [
+    {
+      "step": 0,
+      "floor": 0,
+      "act": 1,
+      "hp": 80,
+      "max_hp": 80,
+      "gold": 99,
+      "screen_state": "event"
+    }
+  ],
+  "errors": [
+    "Step 53: State appears stuck (unchanged for 50 steps). Floor=1, HP=80, Gold=99, Screen=combat"
+  ]
+}

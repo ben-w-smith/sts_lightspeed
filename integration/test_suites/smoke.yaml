@@ -1,0 +1,69 @@
+# Smoke Test Suite
+# Quick validation scenarios to verify core functionality
+
+name: smoke_tests
+description: Quick smoke tests for core game mechanics
+
+scenarios:
+  - name: basic_combat_strike
+    description: Test basic strike card in combat
+    seed: 12345
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"      # Play first card (typically Strike)
+      - action: "end"    # End turn
+      - action: "0"      # Play first card
+      - action: "end"    # End turn
+
+  - name: basic_combat_defend
+    description: Test basic defend card in combat
+    seed: 23456
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "1"      # Play second card (typically Defend)
+      - action: "0"      # Play first card
+      - action: "end"    # End turn
+
+  - name: end_turn_sequence
+    description: Test end turn mechanics
+    seed: 34567
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "end"
+      - action: "end"
+      - action: "end"
+      - action: "end"
+      - action: "end"
+
+  - name: play_all_cards
+    description: Play all available cards in hand
+    seed: 45678
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "0"
+      - action: "0"
+      - action: "0"
+      - action: "0"
+      - action: "end"
+
+  - name: combat_completion
+    description: Complete a basic combat encounter
+    seed: 56789
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"

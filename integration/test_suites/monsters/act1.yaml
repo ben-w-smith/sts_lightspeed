@@ -1,0 +1,123 @@
+# Act 1 Monster Test Suite
+# Tests for Act 1 monster AI and behavior
+
+name: act1_monsters
+description: Test Act 1 monster AI patterns and behavior
+
+scenarios:
+  - name: cultist_basic
+    description: Fight a Cultist (ritual dagger gain)
+    seed: 20001
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # Cultist gains strength each turn
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+
+  - name: jaw_worm_basic
+    description: Fight a Jaw Worm (chomp, bellow, defend)
+    seed: 20002
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+
+  - name: louse_basic
+    description: Fight a Louse (growing strength)
+    seed: 20003
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+
+  - name: slime_combat
+    description: Fight Slimes (split mechanic)
+    seed: 20004
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+
+  - name: gremlin_gang
+    description: Fight Gremlin Gang (multiple enemies)
+    seed: 20005
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # Target specific gremlins: "card_idx target_idx"
+      - action: "0 0"    # Attack first gremlin
+      - action: "end"
+      - action: "0 0"
+      - action: "end"
+      - action: "0 1"    # Attack second gremlin
+      - action: "end"
+
+  - name: exordium_combat_flow
+    description: Multiple combats in Exordium
+    seed: 20006
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # First combat
+      - action: "0"
+      - action: "0"
+      - action: "end"
+      - action: "0"
+      - action: "end"
+      # Should proceed to next encounter
+      - action: "0"
+      - action: "0"
+      - action: "end"
+
+  - name: lagavulin_defend
+    description: Fight Lagavulin (dormant then awaken)
+    seed: 20007
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # Lagavulin starts dormant for 2 turns
+      - action: "end"    # Wait dormant turn 1
+      - action: "end"    # Wait dormant turn 2
+      - action: "0"      # Now awake
+      - action: "end"
+      - action: "0"
+      - action: "end"
+
+  - name: sentries_combat
+    description: Fight 3 Sentries
+    seed: 20008
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0 0"
+      - action: "end"
+      - action: "0 1"
+      - action: "end"
+      - action: "0 2"
+      - action: "end"

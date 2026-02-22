@@ -167,10 +167,10 @@ bool isValidMapAction(const GameContext &gc, const search::GameAction a) {
     }
 
     if (gc.curMapNodeY == -1) {
-        return gc.map->getNode(select, 0).edgeCount > 0;
+        return gc.map.getNode(select, 0).edgeCount > 0;
     }
 
-    const auto &curNode = gc.map->getNode(gc.curMapNodeX, gc.curMapNodeY);
+    const auto &curNode = gc.map.getNode(gc.curMapNodeX, gc.curMapNodeY);
     for (int i = 0; i < curNode.edgeCount; ++i) {
         if (curNode.edges[i] == select) {
             return true;
@@ -599,14 +599,14 @@ std::vector<search::GameAction> getAllMapActions(const sts::GameContext &gc) {
         actions.emplace_back(0);
 
     } else if (gc.curMapNodeY == -1) {
-        for (const auto &node : gc.map->nodes[0]) {
+        for (const auto &node : gc.map.nodes[0]) {
             if (node.edgeCount > 0) {
                 actions.emplace_back(node.x);
             }
         }
 
     } else {
-        auto node = gc.map->getNode(gc.curMapNodeX, gc.curMapNodeY);
+        auto node = gc.map.getNode(gc.curMapNodeX, gc.curMapNodeY);
         for (int i = 0; i < node.edgeCount; ++i) {
             actions.emplace_back(node.edges[i]);
         }

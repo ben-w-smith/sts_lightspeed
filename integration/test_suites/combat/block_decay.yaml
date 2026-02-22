@@ -1,0 +1,66 @@
+# Block Mechanics Test Suite
+# Tests for block gain, decay, and interactions
+
+name: block_mechanics
+description: Test block gain, decay at end of turn, and block interactions
+
+scenarios:
+  - name: defend_gains_block
+    description: Verify playing Defend grants block
+    seed: 10001
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # Initial hand should have Defend - play it to gain block
+      - action: "1"      # Play Defend (typically index 1-2)
+      - action: "end"    # End turn - block should decay
+
+  - name: block_decay_end_turn
+    description: Verify block decays at end of player turn
+    seed: 10002
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "1"      # Gain block with Defend
+      - action: "end"    # End turn - block should be 0 now
+      - action: "1"      # Gain block again
+      - action: "end"    # End turn - block should be 0
+
+  - name: multiple_defend_stacking
+    description: Verify block stacks from multiple Defends
+    seed: 10003
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "1"      # Defend for 5 block
+      - action: "2"      # Another Defend for 5 block (total 10)
+      - action: "end"    # Block decays
+
+  - name: block_reduced_by_damage
+    description: Verify block is reduced when taking damage
+    seed: 10004
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "1"      # Gain block
+      - action: "end"    # End turn, monster attacks
+      # Block should be reduced by attack damage
+
+  - name: iron_wave_block_and_damage
+    description: Test Iron Wave which gives block and deals damage
+    seed: 10005
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      # Iron Wave: Gain 5 block, deal 5 damage
+      - action: "0"
+      - action: "end"
+
+  - name: pommel_strike_damage
+    description: Test Pommel Strike dealing damage and drawing
+    seed: 10006
+    character: IRONCLAD
+    ascension: 0
+    steps:
+      - action: "0"
+      - action: "end"

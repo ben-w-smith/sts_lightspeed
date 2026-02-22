@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <stdexcept>
 
 #include "constants/RelicPools.h"
 #include "constants/CardPools.h"
@@ -14,6 +15,7 @@
 #include "game/Game.h"
 #include "sim/PrintHelpers.h"
 #include "sts_common.h"
+#include "util/assertion_helpers.h"
 
 using namespace sts;
 
@@ -47,7 +49,7 @@ GameContext::GameContext(CharacterClass cc, std::uint64_t seed, int ascension)
     miscRng(seed),
     mathUtilRng(seed-897897), // uses a time based seed -_-
     cc(cc),
-    map(new Map(Map::fromSeed(seed, ascension, 1, true))),
+    map(Map::fromSeed(seed, ascension, 1, true)),
     ascension(ascension) {
     eventList.insert(eventList.end(), EventPools::Act1::events.begin(), EventPools::Act1::events.end());
     shrineList.insert(shrineList.end(), EventPools::Act1::shrines.begin(), EventPools::Act1::shrines.end());
@@ -158,7 +160,7 @@ void GameContext::initFromSave(const SaveFile &s) {
     monsterList = {};
     for (auto m : s.monster_list) {
         if (monsterList.size() == 16) {
-            assert(false);
+            throw std::runtime_error("Monster list overflow: exceeded maximum of 16 monsters");
         }
         monsterList.push_back(m);
     }
@@ -167,7 +169,7 @@ void GameContext::initFromSave(const SaveFile &s) {
     eliteMonsterList = {};
     for (auto m : s.elite_monster_list) {
         if (eliteMonsterList.size() == 10) {
-            assert(false);
+            throw std::runtime_error("Elite monster list overflow: exceeded maximum of 10 elites");
         }
         eliteMonsterList.push_back(m);
     }
@@ -191,8 +193,7 @@ void GameContext::initFromSave(const SaveFile &s) {
             break;
 
         default:
-            std::cerr << "Only save files from the start of combat are supported right now. \n";
-            assert(false);  // other rooms not supported right now.
+            throw std::runtime_error("Only save files from the start of combat are supported. Room type: " + std::to_string(static_cast<int>(s.current_room)));
     }
 
     deck.initFromSaveFile(s);
@@ -214,7 +215,7 @@ void GameContext::initFromSave(const SaveFile &s) {
         potions[i] = p;
     }
 
-    map = std::make_shared<Map>(Map::fromSeed(seed, ascension, act, true));
+    map = Map::fromSeed(seed, ascension, act, true);
 
     regainControlAction = [](GameContext &gc) {
         gc.afterBattle();
@@ -237,7 +238,7 @@ void GameContext::initRelicsFromSave(const SaveFile &s) {
 }
 
 const MapNode& GameContext::getCurMapNode() const {
-    return map->getNode(curMapNodeX, curMapNodeY);
+    return map.getNode(curMapNodeX, curMapNodeY);
 }
 
 int GameContext::fractionMaxHp(float percent, HpType type) const {
@@ -268,10 +269,7 @@ bool GameContext::hasKey(Key key) const {
             return redKey;
 
         default:
-#ifdef sts_asserts
-            assert(false);
-#endif
-            return false;
+            return false;  // Invalid key type, treat as not having the key
     }
 }
 
@@ -706,9 +704,9 @@ void GameContext::transitionToAct(int targetAct) {
     curMapNodeX = -1;
     curMapNodeY = -1;
     if (targetAct == 2 || targetAct == 3) {
-        *map = Map::fromSeed(seed, ascension, targetAct, !hasKey(Key::EMERALD_KEY));
+        map = Map::fromSeed(seed, ascension, targetAct, !hasKey(Key::EMERALD_KEY));
     } else if (targetAct == 4) {
-        *map = Map::act4Map();
+        map = Map::act4Map();
     }
 
     colorlessCardPool = baseColorlessPool;
@@ -768,7 +766,7 @@ void GameContext::transitionToMapNode(int mapNodeX) {
     if (curMapNodeY == 15) {
         curRoom = Room::BOSS;
     } else {
-        curRoom = map->getNode(curMapNodeX, curMapNodeY).room;
+        curRoom = map.getNode(curMapNodeX, curMapNodeY).room;
     }
     relicsOnEnterRoom(curRoom);
 
@@ -786,7 +784,7 @@ void GameContext::transitionToMapNode(int mapNodeX) {
                 break;
 
             default:
-                assert(false);
+                STS_INVALID_ENUM(Room, curRoom);
         }
     }
 
@@ -842,7 +840,7 @@ void GameContext::transitionToMapNode(int mapNodeX) {
         }
 
         default:
-            assert(false);
+            STS_INVALID_ENUM(Room, curRoom);
     }
 
 }
@@ -1191,10 +1189,7 @@ void GameContext::afterBattle() {
             break;
 
         default:
-#ifdef sts_asserts
-            assert(false);
-#endif
-            break;
+            break;  // Unknown event type, may need implementation
     }
 }
 
@@ -1213,10 +1208,7 @@ void GameContext::obtainKey(Key key) {
             break;
 
         default:
-            break;
-#ifdef sts_asserts
-            assert(false);
-#endif
+            break;  // Invalid key type, ignore
     }
 }
 
@@ -1944,7 +1936,7 @@ Rewards GameContext::createEliteCombatReward() {
     if (hasRelic(RelicId::BLACK_STAR)) {
         reward.addRelic(returnNonCampfireRelic(returnRandomRelicTierElite(relicRng)));
     }
-    reward.emeraldKey = map->burningEliteX == curMapNodeX && map->burningEliteY == curMapNodeY;
+    reward.emeraldKey = map.burningEliteX == curMapNodeX && map.burningEliteY == curMapNodeY;
     addPotionRewards(reward);
     reward.addCardReward(createCardReward(Room::ELITE));
     return reward;
@@ -2382,7 +2374,7 @@ void GameContext::chooseNeowOption(const Neow::Option &o) {
         }
 
         case Neow::Bonus::INVALID:
-            assert(false);
+            STS_INVALID_ENUM(Neow::Bonus, o.r);
             break;
     }
 
@@ -2404,7 +2396,8 @@ void GameContext::chooseMatchAndKeepCards(int idx1, int idx2) {
     if (idx1 < 0 || idx1 >= 12 || info.toSelectCards[idx1].card.id == CardId::INVALID
         || idx2 == idx1 || idx2 < 0 || idx2 >= 12 || info.toSelectCards[idx2].card.id == CardId::INVALID
             ) {
-        assert(false);}
+        STS_UNREACHABLE("invalid Match and Keep card selection");
+    }
 
     auto &s1 = info.toSelectCards[idx1].card;
     auto &s2 = info.toSelectCards[idx2].card;
@@ -2462,7 +2455,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2490,7 +2483,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2504,7 +2497,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2518,7 +2511,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2546,7 +2539,7 @@ void GameContext::chooseEventOption(int idx) {
                 }
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2649,7 +2642,7 @@ void GameContext::chooseEventOption(int idx) {
 
             } else {
                 std::cerr << idx << " " << *this << std::endl;
-                assert(false);
+                STS_UNREACHABLE("invalid Dead Adventurer option");
             }
             break;
         }
@@ -2690,7 +2683,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2713,7 +2706,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2726,7 +2719,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2749,7 +2742,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2777,7 +2770,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2802,7 +2795,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
 
             break;
@@ -2821,7 +2814,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2836,7 +2829,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2890,7 +2883,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2912,7 +2905,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -2940,14 +2933,13 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
 
         case Event::LAB:
-            // no actions to take
-            assert(false);
+            // no actions to take - event handled elsewhere
             break;
 
         case Event::THE_SSSSSERPENT: { // The Ssssserpent
@@ -2960,7 +2952,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -2979,7 +2971,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3002,14 +2994,13 @@ void GameContext::chooseEventOption(int idx) {
                 enterBattle(MonsterEncounter::MASKED_BANDITS_EVENT);
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
 
         case Event::MATCH_AND_KEEP:
-            // handled elsewhere
-            assert(false);
+            // handled elsewhere - disabled feature
             break;
 
         case Event::MINDBLOOM: {
@@ -3061,7 +3052,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3085,7 +3076,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3106,7 +3097,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
 
             break;
@@ -3123,7 +3114,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3147,7 +3138,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3159,7 +3150,7 @@ void GameContext::chooseEventOption(int idx) {
             } else if (idx == 1) {
                 regainControl();
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
 
@@ -3171,7 +3162,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3193,7 +3184,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
 
@@ -3206,14 +3197,14 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
 
         case Event::SENSORY_STONE: {
             if (idx < 0 || idx > 3) {
-                assert(false);
+                STS_INVALID_ENUM(SensoryStone option, idx);
             }
 
             if (idx == 1) {
@@ -3249,7 +3240,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3272,7 +3263,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3291,7 +3282,7 @@ void GameContext::chooseEventOption(int idx) {
                 }
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             regainControl();
             break;
@@ -3318,7 +3309,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3335,7 +3326,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3366,7 +3357,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3424,7 +3415,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
                 }
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
 
             break;
@@ -3439,7 +3430,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3452,7 +3443,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3476,7 +3467,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3502,7 +3493,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
 
             auto r = returnRandomScreenlessRelic(returnRandomRelicTier(relicRng, act));
@@ -3514,7 +3505,7 @@ void GameContext::chooseEventOption(int idx) {
 
         case Event::WHEEL_OF_CHANGE: {
             if (idx != 0) {
-                assert(false);
+                STS_INVALID_ENUM(WheelOfChange option, idx);
             }
             int result = miscRng.random(5);
             switch (result) {
@@ -3573,7 +3564,7 @@ void GameContext::chooseEventOption(int idx) {
                     break;
 
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
             }
             break;
         }
@@ -3589,7 +3580,7 @@ void GameContext::chooseEventOption(int idx) {
                 regainControl();
 
             } else {
-                assert(false);
+                STS_UNREACHABLE("invalid event option index");
             }
             break;
         }
@@ -3600,7 +3591,7 @@ void GameContext::chooseEventOption(int idx) {
         case Event::SHOP:
         case Event::TREASURE:
         default:
-            assert(false);
+            STS_INVALID_ENUM(Event, curEvent);
             break;
     }
 }
@@ -3684,7 +3675,7 @@ void GameContext::chooseSelectCardScreenOption(int idx) {
 
                 case CardRarity::INVALID:
                 default:
-                    assert(false);
+                    STS_INVALID_ENUM(event option, idx);
                     break;
             }
             deck.remove(*this, c.deckIdx);
@@ -3694,7 +3685,7 @@ void GameContext::chooseSelectCardScreenOption(int idx) {
 
 
         default:
-            assert(false);
+            STS_INVALID_ENUM(CardSelectScreenType, info.selectScreenType);
             break;
     }
 
@@ -3748,7 +3739,7 @@ void GameContext::chooseCampfireOption(int idx) {
         }
 
         default:
-            assert(false);
+            STS_INVALID_ENUM(campfire option, idx);
             break;
     }
 }
@@ -3766,7 +3757,7 @@ void GameContext::selectScreenTransform() {
             rng = &neowRng;
             break;
         default:
-            assert(false);
+            STS_INVALID_ENUM(RngReference, info.transformRng);
             break;
     }
 
