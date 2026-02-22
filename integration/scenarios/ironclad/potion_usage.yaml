@@ -1,0 +1,114 @@
+# Potion Usage Test
+# Tests potion acquisition, storage, and usage
+
+name: "Ironclad Potion Usage"
+description: "Test potion mechanics including acquisition and combat usage"
+character: IRONCLAD
+ascension: 0
+
+seed: 99999
+
+steps:
+  # Select Neow bonus
+  - type: choose
+    option: 0
+
+  # Navigate to event that gives potion
+  - type: map
+    node: 0
+
+  # Event choice (may give potion)
+  - type: choose
+    option: 0
+
+  # Continue to combat
+  - type: map
+    node: 0
+
+  # Use potion in combat if available
+  - type: potion
+    action: use
+    slot: 0
+    target: 0
+    description: "Use potion on enemy"
+    optional: true
+
+  # Normal combat
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Use another potion
+  - type: potion
+    action: use
+    slot: 0
+    optional: true
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Take rewards
+  - type: choose
+    option: 0
+
+  # Navigate to shop
+  - type: map
+    node: 0
+
+  # Buy potion from shop
+  - type: choose
+    option: 1
+    description: "Buy potion"
+
+  # Leave shop
+  - type: choose
+    option: -1
+
+  # Next combat - test potion discard if full
+  - type: map
+    node: 0
+
+  - type: potion
+    action: discard
+    slot: 0
+    optional: true
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+expected:
+  starting_potions:
+    potion_slots: 3
+
+  after_event:
+    potion_count:
+      min: 0
+      max: 3
+
+  after_shop:
+    potion_count:
+      min: 1

@@ -1,0 +1,100 @@
+# Multi-Monster Combat Test
+# Tests combat against multiple enemies
+
+name: "Ironclad Multi-Monster Combat"
+description: "Test targeting and mechanics against multiple enemies"
+character: IRONCLAD
+ascension: 0
+
+seed: 33333
+
+steps:
+  # Setup
+  - type: choose
+    option: 0
+
+  # Navigate to combat (looking for 2-enemy fight)
+  - type: map
+    node: 0
+
+  # Multi-enemy combat (Gremlin Nob + Sentries or similar)
+  - type: play
+    card: "Bash"
+    target: 0
+    description: "Attack first enemy"
+
+  - type: play
+    card: "Strike"
+    target: 0
+    description: "Attack first enemy"
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Target second enemy
+  - type: play
+    card: "Strike"
+    target: 1
+    description: "Attack second enemy"
+
+  - type: play
+    card: "Strike"
+    target: 1
+
+  - type: play
+    card: "Defend"
+
+  - type: end_turn
+
+  # Switch back to first
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Finish second enemy
+  - type: play
+    card: "Strike"
+    target: 1
+
+  - type: play
+    card: "Strike"
+    target: 1
+
+  - type: end_turn
+
+  # Finish first enemy
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Rewards
+  - type: choose
+    option: 0
+
+  - type: choose
+    option: 0
+
+expected:
+  combat_start:
+    monster_count: 2
+
+  after_kill_first:
+    monster_count: 1
+
+  after_kill_second:
+    screen: "reward"

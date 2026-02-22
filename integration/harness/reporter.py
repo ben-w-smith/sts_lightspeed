@@ -156,12 +156,110 @@ class Reporter:
             Path to the generated report file.
         """
         filepath = self.output_dir / filename
+
+        # Calculate summary statistics
+        total_critical = sum(r.critical_failures for r in self.results)
+        total_major = sum(r.major_failures for r in self.results)
+        total_minor = sum(r.minor_failures for r in self.results)
+        total_steps = sum(r.total_steps for r in self.results)
+
         data = {
             'generated_at': datetime.now().isoformat(),
-            'total_tests': len(self.results),
-            'passed': sum(1 for r in self.results if r.passed),
-            'failed': sum(1 for r in self.results if not r.passed),
+            'summary': {
+                'total_tests': len(self.results),
+                'passed': sum(1 for r in self.results if r.passed),
+                'failed': sum(1 for r in self.results if not r.passed),
+                'total_steps': total_steps,
+                'total_critical': total_critical,
+                'total_major': total_major,
+                'total_minor': total_minor,
+            },
             'results': [asdict(r) for r in self.results]
+        }
+
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=2, default=str)
+
+        return filepath
+
+    def generate_detailed_json_report(self, filename: str = "detailed_results.json") -> Path:
+        """Generate a detailed JSON report with full action history.
+
+        This report includes complete action history for bug reproduction.
+
+        Args:
+            filename: Output filename.
+
+        Returns:
+            Path to the generated report file.
+        """
+        filepath = self.output_dir / filename
+
+        detailed_results = []
+        for result in self.results:
+            result_data = {
+                'test_name': result.test_name,
+                'seed': result.seed,
+                'character': result.character,
+                'ascension': result.ascension,
+                'passed': result.passed,
+                'total_steps': result.total_steps,
+                'critical_failures': result.critical_failures,
+                'major_failures': result.major_failures,
+                'minor_failures': result.minor_failures,
+                'start_time': result.start_time,
+                'end_time': result.end_time,
+                'error_message': result.error_message,
+                'action_history': [],
+                'failed_steps': [],
+                'final_states': {
+                    'game': result.final_game_state,
+                    'sim': result.final_sim_state,
+                }
+            }
+
+            # Build complete action history
+            for step in result.step_results:
+                action_entry = {
+                    'step': step.step,
+                    'action': {
+                        'game_command': step.action.game_command,
+                        'sim_command': step.action.sim_command,
+                        'type': step.action.action_type,
+                        'timestamp': step.action.timestamp,
+                    },
+                    'result': {
+                        'error': step.error,
+                        'match': step.comparison.match if step.comparison else None,
+                        'discrepancies': []
+                    }
+                }
+
+                if step.comparison:
+                    for disc in step.comparison.discrepancies:
+                        action_entry['result']['discrepancies'].append({
+                            'field': disc.field,
+                            'game_value': disc.game_value,
+                            'sim_value': disc.sim_value,
+                            'severity': disc.severity.value,
+                            'message': disc.message,
+                        })
+
+                    # Track failed steps
+                    if not step.comparison.match:
+                        result_data['failed_steps'].append({
+                            'step': step.step,
+                            'discrepancies': action_entry['result']['discrepancies']
+                        })
+
+                result_data['action_history'].append(action_entry)
+
+            detailed_results.append(result_data)
+
+        data = {
+            'generated_at': datetime.now().isoformat(),
+            'version': '2.0',
+            'results': detailed_results
         }
 
         with open(filepath, 'w') as f:
@@ -281,6 +379,7 @@ class Reporter:
         """
         paths = []
         paths.append(self.generate_json_report())
+        paths.append(self.generate_detailed_json_report())
         paths.append(self.generate_markdown_report())
         return paths
 

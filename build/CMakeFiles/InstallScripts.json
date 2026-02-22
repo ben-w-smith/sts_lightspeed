@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/Users/bensmith/development/sts_lightspeed/build/cmake_install.cmake",
-		"/Users/bensmith/development/sts_lightspeed/build/json/cmake_install.cmake",
-		"/Users/bensmith/development/sts_lightspeed/build/pybind11/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

@@ -2,6 +2,133 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
 from enum import Enum
+import re
+
+
+# Monster intent type mapping between CommunicationMod and simulator
+# CommunicationMod uses strings, simulator uses enum values
+INTENT_MAP = {
+    # Attack intents
+    'ATTACK': 0,
+    'ATTACK_BUFF': 1,
+    'ATTACK_DEBUFF': 2,
+    'ATTACK_DEFEND': 3,
+    # Defend intents
+    'DEFEND': 4,
+    'DEFEND_BUFF': 5,
+    'DEFEND_DEBUFF': 6,
+    # Buff/Debuff intents
+    'BUFF': 7,
+    'DEBUFF': 8,
+    'STRONG_ATTACK': 9,
+    'MALAISE': 10,
+    # Special intents
+    'SLEEP': 11,
+    'STUN': 12,
+    'UNKNOWN': 13,
+    'NONE': 14,
+    'ESCAPE': 15,
+}
+
+# Reverse map for lookup
+INTENT_REVERSE_MAP = {v: k for k, v in INTENT_MAP.items()}
+
+# Status effect fields to compare for player and monsters
+PLAYER_STATUS_EFFECTS = [
+    'strength', 'dexterity', 'focus', 'block',
+    'vulnerable', 'weak', 'frail', 'poison', 'burn',
+    'dexterity_loss', 'strength_loss',
+    'energized', 'constricted', 'no_block',
+    'cannot_gain_block', 'entangled', 'intangible',
+]
+
+MONSTER_STATUS_EFFECTS = [
+    'strength', 'block', 'vulnerable', 'weak', 'poison',
+    'burn', 'artifact', 'plated_armor', 'regen',
+    'intangible', 'corpse_explosion', 'lock_on',
+    'shackled', 'painful_stabs',
+]
+
+# Card ID normalization mapping between CommunicationMod and simulator formats
+CARD_ID_NORMALIZE_MAP = {
+    # CommunicationMod format -> normalized format
+    'Strike_R': 'STRIKE',
+    'Defend_R': 'DEFEND',
+    'Bash': 'BASH',
+    # Simulator format -> normalized format
+    'CardId.STRIKE_RED': 'STRIKE',
+    'CardId.DEFEND_RED': 'DEFEND',
+    'CardId.BASH': 'BASH',
+    'Strike': 'STRIKE',
+    'Defend': 'DEFEND',
+}
+
+# Relic ID normalization mapping
+RELIC_ID_NORMALIZE_MAP = {
+    # CommunicationMod format -> normalized format
+    'Burning Blood': 'BURNING_BLOOD',
+    'NeowsBlessing': 'NEOWS_BLESSING',
+    # Simulator format -> normalized format
+    'RelicId.BURNING_BLOOD': 'BURNING_BLOOD',
+    'Burning_Blood': 'BURNING_BLOOD',
+}
+
+
+def normalize_card_id(card_id: str) -> str:
+    """Normalize card ID to a common format for comparison.
+
+    Args:
+        card_id: Card ID from either game or simulator.
+
+    Returns:
+        Normalized card ID.
+    """
+    if card_id is None:
+        return 'UNKNOWN'
+
+    card_id = str(card_id).strip()
+
+    # Check direct mapping
+    if card_id in CARD_ID_NORMALIZE_MAP:
+        return CARD_ID_NORMALIZE_MAP[card_id]
+
+    # Try to extract the core name
+    # Handle formats like "CardId.STRIKE_RED" -> "STRIKE_RED"
+    if '.' in card_id:
+        card_id = card_id.split('.')[-1]
+
+    # Remove common suffixes
+    card_id = card_id.replace('_R', '').replace('_RED', '')
+
+    return card_id.upper()
+
+
+def normalize_relic_id(relic_id: str) -> str:
+    """Normalize relic ID to a common format for comparison.
+
+    Args:
+        relic_id: Relic ID from either game or simulator.
+
+    Returns:
+        Normalized relic ID.
+    """
+    if relic_id is None:
+        return 'UNKNOWN'
+
+    relic_id = str(relic_id).strip()
+
+    # Check direct mapping
+    if relic_id in RELIC_ID_NORMALIZE_MAP:
+        return RELIC_ID_NORMALIZE_MAP[relic_id]
+
+    # Try to extract the core name
+    if '.' in relic_id:
+        relic_id = relic_id.split('.')[-1]
+
+    # Normalize spaces to underscores
+    relic_id = relic_id.replace(' ', '_')
+
+    return relic_id.upper()
 
 
 class DiscrepancySeverity(Enum):
@@ -281,6 +408,56 @@ class StateComparator:
                         message=f"Player {field} mismatch: game={game_val}, sim={sim_val}"
                     ))
 
+        # Compare player status effects
+        discrepancies.extend(
+            self._compare_player_status_effects(game_player, sim_player)
+        )
+
+        return discrepancies
+
+    def _compare_player_status_effects(
+        self,
+        game_player: Dict[str, Any],
+        sim_player: Dict[str, Any]
+    ) -> List[Discrepancy]:
+        """Compare status effects on the player.
+
+        Args:
+            game_player: Player state from game.
+            sim_player: Player state from simulator.
+
+        Returns:
+            List of discrepancies found.
+        """
+        discrepancies = []
+
+        for effect in PLAYER_STATUS_EFFECTS:
+            game_val = game_player.get(effect, 0)
+            sim_val = sim_player.get(effect, 0)
+
+            # Handle None values
+            if game_val is None:
+                game_val = 0
+            if sim_val is None:
+                sim_val = 0
+
+            if game_val != sim_val:
+                # Determine severity based on effect type
+                if effect in ['strength', 'dexterity', 'focus', 'block']:
+                    severity = DiscrepancySeverity.CRITICAL
+                elif effect in ['vulnerable', 'weak', 'frail', 'poison']:
+                    severity = DiscrepancySeverity.MAJOR
+                else:
+                    severity = DiscrepancySeverity.MINOR
+
+                discrepancies.append(Discrepancy(
+                    field=f"player.{effect}",
+                    game_value=game_val,
+                    sim_value=sim_val,
+                    severity=severity,
+                    message=f"Player {effect} mismatch: game={game_val}, sim={sim_val}"
+                ))
+
         return discrepancies
 
     def _compare_monster_states(
@@ -306,10 +483,118 @@ class StateComparator:
                         message=f"Monster {index} {field} mismatch: game={game_val}, sim={sim_val}"
                     ))
 
-        # Compare intent (might have different encoding)
+        # Compare intent
         game_intent = game_monster.get('intent')
         sim_intent = sim_monster.get('intent')
-        # Intent comparison might need translation - skip for now
+        if game_intent is not None and sim_intent is not None:
+            intent_disc = self._compare_monster_intent(game_intent, sim_intent, index)
+            if intent_disc:
+                discrepancies.append(intent_disc)
+
+        # Compare monster status effects
+        discrepancies.extend(
+            self._compare_monster_status_effects(game_monster, sim_monster, index)
+        )
+
+        return discrepancies
+
+    def _compare_monster_intent(
+        self,
+        game_intent: Any,
+        sim_intent: Any,
+        monster_index: int
+    ) -> Optional[Discrepancy]:
+        """Compare monster intents between game and simulator.
+
+        Args:
+            game_intent: Intent from CommunicationMod (string or dict).
+            sim_intent: Intent from simulator (int or enum).
+            monster_index: Monster index for error messages.
+
+        Returns:
+            Discrepancy if intents don't match, None otherwise.
+        """
+        # Normalize game intent to string
+        if isinstance(game_intent, dict):
+            game_intent_name = game_intent.get('name', game_intent.get('type', 'UNKNOWN'))
+        else:
+            game_intent_name = str(game_intent).upper()
+
+        # Normalize sim intent to string
+        if isinstance(sim_intent, int):
+            sim_intent_name = INTENT_REVERSE_MAP.get(sim_intent, f'UNKNOWN_{sim_intent}')
+        else:
+            sim_intent_name = str(sim_intent).upper()
+
+        # Map game intent to sim value for comparison
+        game_intent_value = INTENT_MAP.get(game_intent_name, -1)
+        sim_intent_value = INTENT_MAP.get(sim_intent_name, -1)
+
+        # If both are unknown types, just compare strings
+        if game_intent_value == -1 and sim_intent_value == -1:
+            if game_intent_name != sim_intent_name:
+                return Discrepancy(
+                    field=f"monster[{monster_index}].intent",
+                    game_value=game_intent,
+                    sim_value=sim_intent,
+                    severity=DiscrepancySeverity.MAJOR,
+                    message=f"Monster {monster_index} intent mismatch: game={game_intent_name}, sim={sim_intent_name}"
+                )
+        elif game_intent_value != sim_intent_value:
+            return Discrepancy(
+                field=f"monster[{monster_index}].intent",
+                game_value=game_intent,
+                sim_value=sim_intent,
+                severity=DiscrepancySeverity.MAJOR,
+                message=f"Monster {monster_index} intent mismatch: game={game_intent_name}, sim={sim_intent_name}"
+            )
+
+        return None
+
+    def _compare_monster_status_effects(
+        self,
+        game_monster: Dict[str, Any],
+        sim_monster: Dict[str, Any],
+        index: int
+    ) -> List[Discrepancy]:
+        """Compare status effects on a monster.
+
+        Args:
+            game_monster: Monster state from game.
+            sim_monster: Monster state from simulator.
+            index: Monster index.
+
+        Returns:
+            List of discrepancies found.
+        """
+        discrepancies = []
+
+        for effect in MONSTER_STATUS_EFFECTS:
+            game_val = game_monster.get(effect, 0)
+            sim_val = sim_monster.get(effect, 0)
+
+            # Handle None values
+            if game_val is None:
+                game_val = 0
+            if sim_val is None:
+                sim_val = 0
+
+            if game_val != sim_val:
+                # Determine severity based on effect type
+                if effect in ['strength', 'block']:
+                    severity = DiscrepancySeverity.CRITICAL
+                elif effect in ['vulnerable', 'weak', 'poison']:
+                    severity = DiscrepancySeverity.MAJOR
+                else:
+                    severity = DiscrepancySeverity.MINOR
+
+                discrepancies.append(Discrepancy(
+                    field=f"monster[{index}].{effect}",
+                    game_value=game_val,
+                    sim_value=sim_val,
+                    severity=severity,
+                    message=f"Monster {index} {effect} mismatch: game={game_val}, sim={sim_val}"
+                ))
 
         return discrepancies
 
@@ -331,22 +616,28 @@ class StateComparator:
             ))
             return discrepancies  # Don't try to compare individual cards
 
-        # Compare card counts by type (order may differ)
+        # Compare card counts by normalized type (order may differ)
         game_cards = {}
         sim_cards = {}
 
         for card in game_deck:
-            card_id = card.get('id') or card.get('name')
-            game_cards[card_id] = game_cards.get(card_id, 0) + 1
+            raw_id = card.get('id') or card.get('name')
+            card_id = normalize_card_id(raw_id)
+            game_cards[card_id] = game_cards.get(card_id, {'count': 0, 'cards': []})
+            game_cards[card_id]['count'] += 1
+            game_cards[card_id]['cards'].append(card)
 
         for card in sim_deck:
-            card_id = card.get('id') or card.get('name')
-            sim_cards[card_id] = sim_cards.get(card_id, 0) + 1
+            raw_id = card.get('id') or card.get('name')
+            card_id = normalize_card_id(raw_id)
+            sim_cards[card_id] = sim_cards.get(card_id, {'count': 0, 'cards': []})
+            sim_cards[card_id]['count'] += 1
+            sim_cards[card_id]['cards'].append(card)
 
         all_card_ids = set(game_cards.keys()) | set(sim_cards.keys())
         for card_id in all_card_ids:
-            game_count = game_cards.get(card_id, 0)
-            sim_count = sim_cards.get(card_id, 0)
+            game_count = game_cards.get(card_id, {}).get('count', 0)
+            sim_count = sim_cards.get(card_id, {}).get('count', 0)
             if game_count != sim_count:
                 discrepancies.append(Discrepancy(
                     field=f"deck.{card_id}",
@@ -355,6 +646,61 @@ class StateComparator:
                     severity=DiscrepancySeverity.MAJOR,
                     message=f"Card count mismatch for {card_id}: game={game_count}, sim={sim_count}"
                 ))
+            elif game_count > 0 and sim_count > 0:
+                # Counts match, compare card properties
+                prop_disc = self._compare_card_properties(
+                    game_cards[card_id]['cards'],
+                    sim_cards[card_id]['cards'],
+                    card_id
+                )
+                discrepancies.extend(prop_disc)
+
+        return discrepancies
+
+    def _compare_card_properties(
+        self,
+        game_cards: List[Dict[str, Any]],
+        sim_cards: List[Dict[str, Any]],
+        card_id: str
+    ) -> List[Discrepancy]:
+        """Compare properties of cards with the same ID.
+
+        Args:
+            game_cards: List of game cards with this ID.
+            sim_cards: List of simulator cards with this ID.
+            card_id: Card ID being compared.
+
+        Returns:
+            List of discrepancies found.
+        """
+        discrepancies = []
+
+        # Count upgraded vs non-upgraded
+        game_upgraded = sum(1 for c in game_cards if c.get('upgraded', False))
+        sim_upgraded = sum(1 for c in sim_cards if c.get('upgraded', c.get('is_upgraded', False)))
+
+        if game_upgraded != sim_upgraded:
+            discrepancies.append(Discrepancy(
+                field=f"deck.{card_id}.upgraded",
+                game_value=game_upgraded,
+                sim_value=sim_upgraded,
+                severity=DiscrepancySeverity.MAJOR,
+                message=f"Upgraded count mismatch for {card_id}: game={game_upgraded}, sim={sim_upgraded}"
+            ))
+
+        # Compare costs (if available)
+        game_costs = [c.get('cost', c.get('base_cost', -1)) for c in game_cards]
+        sim_costs = [c.get('cost', c.get('base_cost', -1)) for c in sim_cards]
+
+        # Sort for comparison (order may differ)
+        if sorted(game_costs) != sorted(sim_costs):
+            discrepancies.append(Discrepancy(
+                field=f"deck.{card_id}.costs",
+                game_value=game_costs,
+                sim_value=sim_costs,
+                severity=DiscrepancySeverity.MAJOR,
+                message=f"Card costs mismatch for {card_id}: game={game_costs}, sim={sim_costs}"
+            ))
 
         return discrepancies
 
@@ -375,8 +721,9 @@ class StateComparator:
                 message=f"Relic count mismatch: game={len(game_relics)}, sim={len(sim_relics)}"
             ))
 
-        game_relic_ids = {r.get('id') for r in game_relics}
-        sim_relic_ids = {r.get('id') for r in sim_relics}
+        # Normalize relic IDs for comparison
+        game_relic_ids = {normalize_relic_id(r.get('id')) for r in game_relics if r.get('id')}
+        sim_relic_ids = {normalize_relic_id(r.get('id')) for r in sim_relics if r.get('id')}
 
         missing_in_sim = game_relic_ids - sim_relic_ids
         extra_in_sim = sim_relic_ids - game_relic_ids
