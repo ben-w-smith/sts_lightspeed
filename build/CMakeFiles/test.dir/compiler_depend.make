@@ -15909,45 +15909,7 @@ CMakeFiles/test.dir/src/game/SaveFile.cpp.o: /Users/bensmith/development/sts_lig
   /Users/bensmith/development/sts_lightspeed/include/game/Rewards.h \
   /Users/bensmith/development/sts_lightspeed/include/game/SaveFile.h \
   /Users/bensmith/development/sts_lightspeed/include/sts_common.h \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/adl_serializer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/byte_container_with_subtype.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/from_json.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_chars.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_json.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/exceptions.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/hash.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/binary_reader.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/input_adapters.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/json_sax.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/lexer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/parser.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/position_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/internal_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iter_impl.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iteration_proxy.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iterator_traits.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/primitive_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_pointer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_ref.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_scope.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_unscope.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/cpp_future.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/detected.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/identity_tag.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/is_sax.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/type_traits.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/void_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/binary_writer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/output_adapters.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/serializer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/string_escape.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/value_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json_fwd.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/ordered_map.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
+  /Users/bensmith/development/sts_lightspeed/json/single_include/nlohmann/json.hpp
 
 CMakeFiles/test.dir/src/game/Shop.cpp.o: /Users/bensmith/development/sts_lightspeed/src/game/Shop.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h \
@@ -24434,41 +24396,7 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Users/bensmith/development/sts_lightspeed/include/sim/SimHelpers.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/ordered_map.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json_fwd.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/serializer.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/binary_writer.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_scope.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_ref.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_pointer.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/position_t.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/parser.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/lexer.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/input_adapters.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/binary_reader.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/hash.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/exceptions.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_json.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/from_json.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/byte_container_with_subtype.hpp:
+/Users/bensmith/development/sts_lightspeed/json/single_include/nlohmann/json.hpp:
 
 /Users/bensmith/development/sts_lightspeed/include/constants/SaveFileMappings.h:
 
@@ -24566,8 +24494,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/limits.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/void_t.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_size_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_rsize_t.h:
@@ -24649,8 +24575,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigset_t.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_sigaltstack.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iter_impl.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_seek_set.h:
 
@@ -24774,8 +24698,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_copy.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iterator_traits.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/stdlib.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__ranges/from_range.h:
@@ -24882,8 +24804,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/container_traits.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/value_t.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/comparison.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/unreachable.h:
@@ -24909,8 +24829,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/no_destroy.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/move.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iteration_proxy.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/is_valid_range.h:
 
@@ -25016,8 +24934,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_trivially_lexicographically_comparable.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_chars.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_trivially_copyable.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_trivially_assignable.h:
@@ -25045,8 +24961,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_scalar.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_same.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/detected.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_referenceable.h:
 
@@ -25110,8 +25024,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_assignable.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/adl_serializer.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/forward_like.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xlocale.h:
@@ -25135,10 +25047,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/has_unique_object_representation.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/extent.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/type_traits.hpp:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/primitive_iterator.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include/__stddef_offsetof.h:
 
@@ -25540,8 +25448,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/enable_if.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/internal_iterator.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/concepts.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__iterator/erase_if_container.h:
@@ -25594,8 +25500,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/libkern/_OSByteOrder.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_bounded_array.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_def.h:
@@ -25607,8 +25511,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_destructible.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/queue.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/cpp_future.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perms.h:
 
@@ -25627,8 +25529,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_fd_set.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/algorithm:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/is_sax.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_unsigned.h:
 
@@ -25651,8 +25551,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_negate.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_implicitly_default_constructible.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/output_adapters.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tuple/make_tuple_types.h:
 
@@ -25699,8 +25597,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/queue:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/out_ptr.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/machine/endian.h:
 
@@ -25798,8 +25694,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/totally_ordered.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/string_escape.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/vector:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale_dir/support/apple.h:
@@ -25831,8 +25725,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__system_error/error_code.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/predicate.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/json_sax.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/can_extract_key.h:
 
@@ -25973,8 +25865,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/nth_element.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/optional:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/identity_tag.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xlocale/_stdio.h:
 
@@ -26226,8 +26116,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_types/_blksize_t.h:
 
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_unscope.hpp:
-
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/compressed_pair.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/generate_n.h:
@@ -26335,8 +26223,6 @@ CMakeFiles/test.dir/src/sim/search/SimpleAgent.cpp.o: /Users/bensmith/developmen
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cctype:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/enable_insertable.h:
-
-/Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/any_of.h:
 

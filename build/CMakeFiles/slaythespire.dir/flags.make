@@ -6,7 +6,7 @@ CXX_DEFINES = -Dslaythespire_EXPORTS
 
 CXX_INCLUDES = -I/Users/bensmith/development/sts_lightspeed/include -I/Users/bensmith/development/sts_lightspeed/json/single_include -I/Users/bensmith/development/sts_lightspeed/bindings -isystem /Users/bensmith/development/sts_lightspeed/pybind11/include -isystem /opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/include/python3.14
 
-CXX_FLAGSarm64 = -Wno-shift-count-overflow -O3 -std=gnu++17 -arch arm64 -fPIC -fvisibility=hidden -flto
+CXX_FLAGSarm64 = -Wno-shift-count-overflow -O3 -std=gnu++17 -arch arm64 -fPIC -fvisibility=hidden
 
-CXX_FLAGS = -Wno-shift-count-overflow -O3 -std=gnu++17 -arch arm64 -fPIC -fvisibility=hidden -flto
+CXX_FLAGS = -Wno-shift-count-overflow -O3 -std=gnu++17 -arch arm64 -fPIC -fvisibility=hidden
 

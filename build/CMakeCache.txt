@@ -320,6 +320,9 @@ PYTHON_EXECUTABLE:FILEPATH=/opt/homebrew/bin/python3.14
 //Path to a library.
 PYTHON_LIBRARY:FILEPATH=/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/lib/libpython3.14.dylib
 
+//No help, variable specified on the command line.
+Python_EXECUTABLE:UNINITIALIZED=
+
 //Value Computed by CMake
 nlohmann_json_BINARY_DIR:STATIC=/Users/bensmith/development/sts_lightspeed/build/json
 

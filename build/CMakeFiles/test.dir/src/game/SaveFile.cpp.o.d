@@ -1,6 +1,6 @@
 CMakeFiles/test.dir/src/game/SaveFile.cpp.o: \
   /Users/bensmith/development/sts_lightspeed/src/game/SaveFile.cpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json.hpp \
+  /Users/bensmith/development/sts_lightspeed/json/single_include/nlohmann/json.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/algorithm \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config_site \
@@ -791,35 +791,14 @@ CMakeFiles/test.dir/src/game/SaveFile.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__numeric/transform_reduce.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/execution \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_execution_policy.h \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/adl_serializer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/from_json.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/forward_list \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/valarray \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/exceptions.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/value_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/string_escape.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_scope.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/cassert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_assert.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/_static_assert.h \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/position_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/cpp_future.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/identity_tag.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/type_traits.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iterator_traits.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/void_t.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/detected.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/json_fwd.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_json.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iteration_proxy.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/byte_container_with_subtype.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/hash.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/binary_reader.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/input_adapters.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/istream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__ostream/basic_ostream.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__ostream/put_character_sequence.h \
@@ -835,23 +814,6 @@ CMakeFiles/test.dir/src/game/SaveFile.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__fwd/stack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/print \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/unistd.h \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/json_sax.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/lexer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/meta/is_sax.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/input/parser.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/internal_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/primitive_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/iter_impl.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/iterators/json_reverse_iterator.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_pointer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/json_ref.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/binary_writer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/output_adapters.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/output/serializer.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/conversions/to_chars.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/ordered_map.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/detail/macro_unscope.hpp \
-  /Users/bensmith/development/sts_lightspeed/json/include/nlohmann/thirdparty/hedley/hedley_undef.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \
   /Users/bensmith/development/sts_lightspeed/include/sts_common.h \

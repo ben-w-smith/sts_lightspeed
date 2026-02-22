@@ -1,140 +1,45 @@
-# CLAUDE.md - sts_lightspeed Project
+# CLAUDE.md - sts_lightspeed
 
-## Project Overview
+## What This Is
 
-sts_lightspeed is a high-performance C++ simulator for Slay the Spire, with Python bindings for RL training and testing. The project includes an integration testing framework that synchronizes the simulator with the real game via CommunicationMod.
+A high-performance C++ simulator for Slay the Spire with Python bindings. Used for RL training and tree search. The simulator achieves 100% RNG accuracy with the original Java game.
 
-## Directory Structure
-
-```
-sts_lightspeed/
-├── src/                    # C++ source code
-├── bindings/               # pybind11 Python bindings
-├── build/                  # Build output (slaythespire.so)
-├── integration/            # Integration testing framework
-│   ├── harness/           # Core test components
-│   ├── scenarios/         # YAML test scenarios
-│   ├── test_cases/        # Python test cases
-│   ├── run_tests.py       # Main test runner
-│   └── config.yaml        # Test configuration
-└── tests/
-    └── integration/
-        └── harness/        # Additional test utilities
-```
-
-## Testing Framework Configuration
-
-### Centralized Config: ~/.sts_testing/
-
-The testing framework uses a centralized configuration at `~/.sts_testing/`:
-
-```
-~/.sts_testing/
-├── config          # Edit BRIDGE_PATH to switch bridges
-└── run_bridge.sh   # Wrapper script (don't edit)
-```
-
-**To switch between different bridges:**
-```bash
-# Edit the config file
-vim ~/.sts_testing/config
-
-# Change BRIDGE_PATH to your desired bridge script
-BRIDGE_PATH="/path/to/your/bridge.py"
-```
-
-### CommunicationMod Setup
-
-CommunicationMod is configured via:
-```
-~/Library/Preferences/ModTheSpire/CommunicationMod/config.properties
-```
-
-The config should reference the wrapper script:
-```properties
-command=/Users/bensmith/.sts_testing/run_bridge.sh
-runAtGameStart=true
-```
-
-## Steam/Steam Workshop Setup
-
-### Installed Mods (via Steam Workshop)
-
-1. **ModTheSpire** - Mod loader (required)
-   - Location: `~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/mods/ModTheSpire*`
-
-2. **CommunicationMod** - API for external control
-   - Location: `~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/mods/CommunicationMod*`
-   - Config: `~/Library/Preferences/ModTheSpire/CommunicationMod/config.properties`
-
-3. **StSLib** - Required dependency for many mods
-4. **BaseMod** - Required dependency for CommunicationMod
-
-### Launching with Mods
+## Quick Start
 
 ```bash
-# Launch via ModTheSpire (recommended)
-open "~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/ModTheSpire.app"
+# Build
+cmake -B build -S . && cmake --build build
 
-# Or via Steam with mods enabled
-# Steam will automatically use ModTheSpire if installed
-```
-
-### Game Paths (Mac)
-
-```
-Game Root:     ~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/
-Mods:          ~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/mods/
-Preferences:   ~/Library/Preferences/ModTheSpire/
-Saves:         ~/Library/Application Support/SlayTheSpire/
-```
-
-## Running Tests
-
-### Simulator-Only Tests (No Game Required)
-
-```bash
-cd ~/development/sts_lightspeed
-
-# Quick smoke test
+# Test (simulator-only, no game needed)
 python integration/run_tests.py --quick --no-game --seed 12345
-
-# Run a scenario
-python integration/run_tests.py --scenario integration/scenarios/ironclad/strike_combo.yaml --no-game
 ```
 
-### Full Integration Tests (Requires Game)
+## Code Map
 
-```bash
-# 1. Ensure ~/.sts_testing/config points to correct bridge
-cat ~/.sts_testing/config
+| Area | Key Files | Start Here |
+|------|-----------|------------|
+| Combat | `src/combat/` | `BattleContext.h`, `Actions.cpp` |
+| Game State | `src/game/` | `GameContext.h`, `Game.cpp` |
+| Python API | `bindings/` | `slaythespire.cpp` |
+| Card Logic | `src/combat/` + `include/constants/Cards.h` | Search card name |
+| Monster AI | `src/combat/MonsterSpecific.cpp` | `MonsterIds.h` |
+| RNG System | `include/game/Random.h` | Both namespaces |
 
-# 2. Launch game with mods
-open "~/Library/Application Support/Steam/steamapps/common/SlayTheSpire/ModTheSpire.app"
+## Key Patterns
 
-# 3. Wait for game to load, then run tests
-python integration/run_tests.py --quick --seed 12345
-```
+- **State machines**: `GameContext` handles overworld, `BattleContext` handles combat. Both have `inputState`/`screenState` for UI flow.
+- **RNG accuracy**: `java::Random` and `sts::Random` replicate Java exactly. Never modify RNG logic.
 
-## Worktrees
+## Deeper Docs
 
-This project uses git worktrees for feature development:
+- **[docs/TESTING.md](docs/TESTING.md)** - Integration tests, CommunicationMod setup, scenarios
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Class diagrams, data flow, file organization
+- **[.agents/workflows/](.agents/workflows/)** - Character-specific implementation guides
 
-```bash
-# List worktrees
-git worktree list
+## Code Is Truth
 
-# Current worktrees:
-# - main: ~/development/sts_lightspeed
-# - feature-simulator-game-testing-framework: ~/development/sts_lightspeed/.worktrees/feature-simulator-game-testing-framework
-```
+1. Read header files first (`include/`) - they define the data structures
+2. Then read source (`src/`) for implementation details
+3. Check tests in `integration/` for usage examples
 
-## Building
-
-```bash
-cd ~/development/sts_lightspeed
-cmake -B build -S .
-cmake --build build
-```
-
-The Python module `slaythespire.cpython-314-darwin.so` will be in `build/`.
+When in doubt, search the code. Comments are sparse but names are descriptive.
