@@ -88,6 +88,7 @@ class GameController:
         self._last_state: Optional[Dict[str, Any]] = None
         self._lock_context = None
         self._lock_info: Optional[LockInfo] = None
+        self._recording_name: Optional[str] = None
 
     def is_connected(self) -> bool:
         """Check if bridge is ready."""
@@ -255,6 +256,43 @@ class GameController:
         game_state = state.get('game_state', {})
         raw_seed = game_state.get('seed', 0)
         return SeedSynchronizer.convert_seed_to_int64(raw_seed)
+
+    def start_recording(self, name: str, description: str = "") -> None:
+        """Start recording gameplay.
+
+        The recording captures game states as they are received from
+        CommunicationMod. Call stop_recording() to save the recording.
+
+        Args:
+            name: Name for this recording (used as filename).
+            description: Optional description of the recording.
+        """
+        cmd = f"record {name}"
+        if description:
+            cmd += f" {description}"
+        self.send_command(cmd)
+        self._recording_name = name
+
+    def stop_recording(self) -> Optional[str]:
+        """Stop recording and return recording name.
+
+        Returns:
+            Name of the recording that was stopped, or None if not recording.
+        """
+        if self._recording_name:
+            self.send_command("stop_record")
+            name = self._recording_name
+            self._recording_name = None
+            return name
+        return None
+
+    def is_recording(self) -> bool:
+        """Check if currently recording.
+
+        Returns:
+            True if recording is active.
+        """
+        return self._recording_name is not None
 
     def get_combat_state(self) -> Optional[Dict[str, Any]]:
         """Get current combat state if in combat.

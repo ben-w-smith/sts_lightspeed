@@ -151,8 +151,9 @@ class SimulatorController:
         for card in self._gc.deck:
             deck.append({
                 'id': str(card.id),
-                'name': repr(card),
-                'upgraded': card.upgraded,
+                'name': card.name if hasattr(card, 'name') else repr(card),
+                'cost': card.cost if hasattr(card, 'cost') else -1,
+                'upgraded': card.upgraded if hasattr(card, 'upgraded') else False,
             })
         return deck
 
