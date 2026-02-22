@@ -594,7 +594,7 @@ void search::SimpleAgent::stepOutOfCombat(GameContext &gc) {
             }
 
             if (gc.curMapNodeY < 0) {
-                mapPath = getBestMapPathForWeights(*gc.map, mapWeights[gc.act-1]);
+                mapPath = getBestMapPathForWeights(gc.map, mapWeights[gc.act-1]);
             }
 
             takeAction(gc, mapPath[gc.curMapNodeY+1]);

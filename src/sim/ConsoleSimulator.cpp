@@ -257,6 +257,10 @@ void ConsoleSimulator::takeAction(const std::string &action) {
 
     switch (gc->screenState) {
 
+        case ScreenState::BATTLE:
+            battleSim.takeAction(action);
+            break;
+
         case ScreenState::BOSS_RELIC_REWARDS:
             takeBossRelicRewardsAction(action);
             break;
@@ -431,12 +435,12 @@ void ConsoleSimulator::takeTreasureRoomAction(const std::string &action) {
 
 void ConsoleSimulator::printMapScreenActions(std::ostream &os) const {
     os << "Map Screen: Select Next Map Node.\n";
-    os << gc->map->toString(true) << '\n';
+    os << gc->map.toString(true) << '\n';
 
     if (gc->curMapNodeY == 14) {
         os << "0 : Advance to Boss" << '\n';
     } else if (gc->curMapNodeY == -1) {
-        for (const auto firstRowNode : gc->map->nodes[0]) {
+        for (const auto firstRowNode : gc->map.nodes[0]) {
             if (firstRowNode.edgeCount > 0) {
                 os << firstRowNode.x << ": " << roomStrings[static_cast<int>(firstRowNode.room)] << '\n';
             }
@@ -444,10 +448,10 @@ void ConsoleSimulator::printMapScreenActions(std::ostream &os) const {
     } else {
         os << "CurX: " << gc->curMapNodeX << " CurY: " << gc->curMapNodeY << '\n';
 
-        auto node = gc->map->getNode(gc->curMapNodeX, gc->curMapNodeY);
+        auto node = gc->map.getNode(gc->curMapNodeX, gc->curMapNodeY);
         for (int i = 0; i < node.edgeCount; ++i) {
             const auto nextNodeX = node.edges[i];
-            const auto &nextNode = gc->map->getNode(nextNodeX, node.y + 1);
+            const auto &nextNode = gc->map.getNode(nextNodeX, node.y + 1);
             os << nextNode.x << ": " << roomStrings[static_cast<int>(nextNode.room)] << '\n';
         }
     }

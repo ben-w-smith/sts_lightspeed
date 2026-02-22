@@ -55,8 +55,8 @@ void BattleContext::init(const GameContext &gc, MonsterEncounter encounterToInit
     player.gold = gc.gold;
 
     monsters.init(*this, encounterToInit);
-    if (gc.map->burningEliteX == gc.curMapNodeX && gc.map->burningEliteY == gc.curMapNodeY) {
-        monsters.applyEmeraldEliteBuff(*this, gc.map->burningEliteBuff, gc.act);
+    if (gc.map.burningEliteX == gc.curMapNodeX && gc.map.burningEliteY == gc.curMapNodeY) {
+        monsters.applyEmeraldEliteBuff(*this, gc.map.burningEliteBuff, gc.act);
     }
 
     player.cardDrawPerTurn = 5;
@@ -2484,7 +2484,7 @@ void BattleContext::useSkillCard() {
             addToBot( Action([&](BattleContext &b) {
                 int count = b.monsters.monsterCount;
                 for (int i = 0; i < count; ++i) {
-                    if (b.monsters.arr[i].curHp > 0 && !b.monsters.arr[i].isEscaping) {
+                    if (b.monsters.arr[i].curHp > 0 && !b.monsters.arr[i].isEscaping()) {
                         b.player.channelOrb(b, Orb::FROST);
                     }
                 }
@@ -2547,7 +2547,7 @@ void BattleContext::useSkillCard() {
 
         case CardId::EQUILIBRIUM: {
             addToBot( Actions::GainBlock(calculateCardBlock(up ? 5 : 3)) );
-            addToBot( Actions::BuffPlayer<PS::EQUIV>(1) );
+            addToBot( Actions::BuffPlayer<PS::EQUILIBRIUM>(1) );
             break;
         }
 
@@ -2682,8 +2682,11 @@ void BattleContext::useSkillCard() {
                 }
                 // Exhaust X cards from hand, gain energy for each
                 // This is a simplified implementation
-                b.cardSelectInfo = CardSelectInfo(x, CardSelectTask::RECYCLE, false, true);
-                b.setState(InputState::SELECT_CARDS_HAND);
+                b.cardSelectInfo.pickCount = x;
+                b.cardSelectInfo.cardSelectTask = CardSelectTask::RECYCLE;
+                b.cardSelectInfo.canPickZero = false;
+                b.cardSelectInfo.canPickAnyNumber = true;
+                b.setState(InputState::CARD_SELECT);
             }) );
             break;
         }
@@ -2756,8 +2759,8 @@ void BattleContext::useSkillCard() {
         case CardId::WHITE_NOISE: {
             addToBot( Action([&, up](BattleContext &b) {
                 // Get random Defect power card
-                CardId powerId = RarityCardPool::getCardFromPool(CharacterClass::DEFECT, CardType::POWER,
-                    static_cast<CardRarity>(b.miscRng.random(2))); // COMMON, UNCOMMON, or RARE
+                CardId powerId = RarityCardPool::getCardFromPool(CharacterClass::DEFECT,
+                    static_cast<CardRarity>(b.miscRng.random(2)), 0); // COMMON, UNCOMMON, or RARE
                 CardInstance card(powerId, up);
                 b.addToTop(Actions::MakeTempCardInHand(card, 1));
             }) );
@@ -3257,7 +3260,7 @@ void BattleContext::usePowerCard() {
         }
 
         case CardId::HEATSINKS: {
-            addToBot( Actions::BuffPlayer<PS::HEATSINK>(up ? 2 : 1) );
+            addToBot( Actions::BuffPlayer<PS::HEATSINKS>(up ? 2 : 1) );
             break;
         }
 
@@ -4722,10 +4725,10 @@ void BattleContext::chooseCodexCard(CardId id) {
 
 void BattleContext::chooseDualWieldCard(int handIdx) {
 
-    // dual wield is so fucking buggy
-    // if you dual wield a ritual dagger:
-    // when there is no choice on which card to pick, the first one will change the card in the deck
-    // when there **is** a choice on which card to pick, neither will change the card in the deck XDD
+    // ISSUE-001: Dual Wield + Ritual Dagger interaction is inconsistent
+    // See docs/KNOWN_ISSUES.md for details
+    // - When no choice on which card to pick: first one changes card in deck
+    // - When there IS a choice: neither changes the card in deck
 
     const int copyCount = cardSelectInfo.dualWield_CopyCount();
     CardInstance dualWieldCard = cards.hand[handIdx];

@@ -8,9 +8,11 @@
 #include "sim/ConsoleSimulator.h"
 #include "sim/PrintHelpers.h"
 #include "sim/SimHelpers.h"
+#include "util/assertion_helpers.h"
 
 #include <regex>
 #include <sstream>
+#include <stdexcept>
 
 using namespace sts;
 
@@ -256,7 +258,7 @@ void BattleSimulator::takeNormalAction(const std::string &action) {
 
 
     } else {
-        assert(false);
+        STS_UNREACHABLE("Unknown card action type in playCardAction");
     }
 }
 
@@ -321,9 +323,7 @@ void BattleSimulator::printCardSelectActions(std::ostream &os) const {
 
         case CardSelectTask::FORETHOUGHT: {
             if (bc->cardSelectInfo.canPickAnyNumber) {
-                // todo unsupported
-                assert(false);
-                os << "Forethought: Choose a card to put on bottom of your draw pile.\n";
+                STS_NOT_IMPLEMENTED("Forethought with canPickAnyNumber");
             } else {
                 os << "Forethought: Choose card to put on bottom of your draw pile.\n";
             }
@@ -396,10 +396,7 @@ void BattleSimulator::printCardSelectActions(std::ostream &os) const {
 
 
         default:
-#ifdef sts_asserts
-            assert(false);
-#endif
-            break;
+            STS_INVALID_ENUM(CardSelectTask, bc->cardSelectInfo.cardSelectTask);
     }
 
 }
