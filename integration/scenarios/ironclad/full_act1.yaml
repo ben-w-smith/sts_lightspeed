@@ -1,0 +1,187 @@
+# Full Act 1 Ironclad Run Scenario
+# Tests combat, events, elite fights, and boss battle
+
+name: "Ironclad Act 1 Full Run"
+description: "Complete Act 1 run including combat, events, elite, and boss"
+character: IRONCLAD
+ascension: 0
+
+# Use a known seed for reproducibility
+seed: 12345
+
+# Complete Act 1 run steps
+steps:
+  # Neow bonus selection
+  - type: choose
+    option: 0
+    description: "Select first Neow reward"
+
+  # Map navigation - head toward elite and boss
+  - type: map
+    node: 0
+    description: "Choose first map node"
+
+  # Floor 1 - Combat (Cultist or similar)
+  - type: play
+    card: "Bash"
+    target: 0
+    description: "Apply Vulnerable to enemy"
+
+  - type: play
+    card: "Strike"
+    target: 0
+    description: "Deal damage"
+
+  - type: play
+    card: "Strike"
+    target: 0
+    description: "Deal damage"
+
+  - type: end_turn
+    description: "End turn 1"
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Defend"
+
+  - type: end_turn
+    description: "End turn 2 - combat should end"
+
+  # Reward screen - take gold/cards
+  - type: choose
+    option: 0
+    description: "Take card reward"
+
+  - type: choose
+    option: 0
+    description: "Select first card"
+
+  # Continue through map
+  - type: map
+    node: 0
+
+  # More combat steps...
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Take rewards
+  - type: choose
+    option: 0
+
+  - type: choose
+    option: 0
+
+  # Navigate to rest site
+  - type: map
+    node: 0
+
+  # Rest
+  - type: choose
+    option: 0
+    description: "Rest to heal"
+
+  # Continue
+  - type: map
+    node: 0
+
+  # More combat
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Boss approach
+  - type: map
+    node: 0
+
+  - type: map
+    node: 0
+
+  # Boss fight (Hexaghost)
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Defend"
+
+  - type: end_turn
+
+expected:
+  after_neow:
+    screen: "map"
+    player_hp:
+      min: 80
+      max: 80
+
+  after_combat_1:
+    gold:
+      min: 99
+
+  act_1_complete:
+    act: 2

@@ -1,0 +1,140 @@
+# Relic Integration Test
+# Tests relic acquisition and effects
+
+name: "Ironclad Relic Integration"
+description: "Test relic acquisition and passive effects"
+character: IRONCLAD
+ascension: 0
+
+seed: 54321
+
+steps:
+  # Get starting relic (Burning Blood)
+  - type: verify
+    check: "has_relic"
+    relic: "Burning Blood"
+    description: "Verify starting relic"
+
+  # Select Neow bonus (may give relic)
+  - type: choose
+    option: 0
+
+  # Navigate to first combat
+  - type: map
+    node: 0
+
+  # Combat - verify Burning Blood heal after combat
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Take card reward
+  - type: choose
+    option: 0
+
+  - type: choose
+    option: 0
+
+  # Navigate to elite if possible
+  - type: map
+    node: 0
+
+  # Combat with elite (drops relic)
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Take relic from elite
+  - type: choose
+    option: 0
+
+  # Verify relic was added
+  - type: verify
+    check: "relic_count"
+    min: 2
+    description: "Should have at least 2 relics after elite"
+
+  # Continue to rest
+  - type: map
+    node: 0
+
+  - type: choose
+    option: 0
+    description: "Rest"
+
+  # Navigate to shop
+  - type: map
+    node: 0
+
+  # Buy relic from shop (if affordable)
+  - type: choose
+    option: 2
+    description: "Buy relic from shop"
+
+  # Leave shop
+  - type: choose
+    option: -1
+    description: "Leave shop"
+
+expected:
+  starting_relics:
+    relics:
+      - "Burning Blood"
+
+  after_elite:
+    relic_count:
+      min: 2
+
+  after_shop:
+    gold:
+      max: 150  # Spent some gold

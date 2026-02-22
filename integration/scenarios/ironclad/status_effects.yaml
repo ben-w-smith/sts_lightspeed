@@ -1,0 +1,137 @@
+# Status Effects Test
+# Tests various status effects: Vulnerable, Weak, Strength, etc.
+
+name: "Ironclad Status Effects"
+description: "Test status effect application and tracking"
+character: IRONCLAD
+ascension: 0
+
+seed: 77777
+
+steps:
+  # Setup
+  - type: choose
+    option: 0
+
+  - type: map
+    node: 0
+
+  # Combat - test Bash applying Vulnerable
+  - type: play
+    card: "Bash"
+    target: 0
+    expected:
+      monster_0_vulnerable: 2
+    description: "Bash applies 2 Vulnerable"
+
+  # Verify vulnerable was applied
+  - type: verify
+    check: "monster_status"
+    monster: 0
+    status: "vulnerable"
+    value: 2
+
+  - type: play
+    card: "Strike"
+    target: 0
+    description: "Strike deals bonus damage due to Vulnerable"
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Test block with Defend
+  - type: play
+    card: "Defend"
+    expected:
+      player_block: 5
+    description: "Defend gives 5 block"
+
+  - type: verify
+    check: "player_status"
+    status: "block"
+    value: 5
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Check vulnerable expired
+  - type: verify
+    check: "monster_status"
+    monster: 0
+    status: "vulnerable"
+    value: 0
+    description: "Vulnerable should expire after 2 turns"
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Take rewards
+  - type: choose
+    option: 0
+
+  - type: choose
+    option: 0
+
+  # Next combat - test more effects
+  - type: map
+    node: 0
+
+  # Combat with Louse (may apply Weak)
+  - type: play
+    card: "Bash"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  # Check if we have Weak
+  - type: verify
+    check: "player_status"
+    status: "weak"
+    optional: true
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: play
+    card: "Strike"
+    target: 0
+
+  - type: end_turn
+
+  - type: choose
+    option: 0
+
+expected:
+  after_bash:
+    monster_0:
+      vulnerable: 2
+
+  after_defend:
+    player:
+      block: 5
+
+  after_vulnerable_expire:
+    monster_0:
+      vulnerable: 0
